@@ -20,7 +20,7 @@ export default function RootLayout({
     <html lang="en">
       <body
         className={cn(
-          "flex min-h-dvh bg-stone-100 font-sans text-stone-900 antialiased",
+          "flex min-h-dvh flex-col bg-stone-100 font-sans text-stone-900 antialiased md:flex-row",
           fontSans.variable,
         )}
       >
