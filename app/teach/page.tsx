@@ -14,7 +14,7 @@ export default function Teach() {
 
   return (
     <>
-      <main className="flex min-h-full grow flex-col items-center justify-between p-24">
+      <main className="flex min-h-full grow flex-col items-center justify-between p-24 md:overflow-y-auto">
         Teach
       </main>
       {navLinksPortal
