@@ -2,7 +2,14 @@ import { ImageResponse } from "next/og";
 
 export const runtime = "edge";
 
-export async function GET() {
+export const alt = "Learn Quickly ⚡️ Remember Longly";
+export const size = {
+  width: 800,
+  height: 400,
+};
+export const contentType = "image/png";
+
+export default async function Image() {
   return new ImageResponse(
     (
       <div tw="flex flex-col w-full h-full items-center justify-center bg-stone-100">
@@ -29,9 +36,7 @@ export async function GET() {
       </div>
     ),
     {
-      width: 800,
-      height: 400,
-      emoji: "fluent",
+      ...size,
     },
   );
 }
