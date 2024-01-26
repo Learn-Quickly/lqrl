@@ -1,13 +1,5 @@
 import { H1 } from "@/components/ui/typography";
 import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardContent,
-  CardFooter,
-} from "@/components/ui/card";
-import {
   Pagination,
   PaginationContent,
   PaginationEllipsis,
@@ -26,15 +18,16 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { CourseCard, CourseCardNew } from "@/components/CourseCard";
 
 export default function Home() {
   return (
     <main className="flex min-h-full max-w-7xl grow flex-col gap-8 p-12 md:overflow-y-auto md:p-24">
-      <div className="flex justify-between">
+      <div className="flex flex-col justify-between gap-2 sm:flex-row">
         <H1>My courses</H1>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline">
+            <Button variant="outline" className="w-fit">
               <Filter className="mr-2 size-4" /> Complete
             </Button>
           </DropdownMenuTrigger>
@@ -50,47 +43,26 @@ export default function Home() {
         </DropdownMenu>
       </div>
 
-      <div className="grid gap-4 text-center sm:grid-cols-2 md:grid-cols-1 lg:mb-0 lg:grid-cols-2 lg:text-left xl:grid-cols-3">
-        <Card>
-          <CardHeader className="bg-red-50">
-            <CardTitle>Мнемотехніки Ведмедика Медика</CardTitle>
-            <CardDescription>
-              Розвиток когнітивних навичок для дітей
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p>Card content</p>
-          </CardContent>
-          <CardFooter>
-            <p>Learn more</p>
-          </CardFooter>
-        </Card>
-        <Card>
-          <CardHeader className="bg-yellow-50">
-            <CardTitle>Професійний розвиток вчителів</CardTitle>
-            <CardDescription>Вчимося навчати</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p>Card content</p>
-          </CardContent>
-          <CardFooter>
-            <p>Learn more</p>
-          </CardFooter>
-        </Card>
-        <Card>
-          <CardHeader className="bg-blue-50">
-            <CardTitle>AdVanced React</CardTitle>
-            <CardDescription>
-              Learn how to connect useState with Pocketbase
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p>Card content</p>
-          </CardContent>
-          <CardFooter>
-            <p>Learn more</p>
-          </CardFooter>
-        </Card>
+      <div
+        className="grid gap-4 text-center sm:grid-cols-2 md:grid-cols-1 lg:mb-0 lg:grid-cols-2 lg:text-left xl:grid-cols-3"
+        style={{ gridAutoRows: "1fr" }}
+      >
+        <CourseCard
+          title="Мнемотехніки Ведмедика Медика"
+          description="Розвиток когнітивних навичок для дітей"
+          color="red"
+        />
+        <CourseCard
+          title="Професійний розвиток вчителів"
+          description="Вчимося навчати"
+          color="yellow"
+        />
+        <CourseCard
+          title="AdVanced React"
+          description="Learn how to connect useState with Pocketbase"
+          color="blue"
+        />
+        <CourseCardNew />
       </div>
       <Pagination>
         <PaginationContent>
