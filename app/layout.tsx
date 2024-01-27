@@ -7,6 +7,7 @@ import { Navigation } from "@/components/app-nav";
 const fontSans = FontSans({ subsets: ["latin"], variable: "--font-sans" });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://lqrl.vercel.app/"),
   title: "LQRL",
   description: "Learn Quickly ⚡️ Remember Longly",
 };

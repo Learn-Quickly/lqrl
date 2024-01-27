@@ -35,7 +35,7 @@ export function Navigation() {
               </Link>
             </Button>
           </div>
-          <div className="flex items-center gap-0.5 self-end md:hidden">
+          <div className="flex items-center gap-0.5 self-end overflow-hidden md:hidden">
             <Button variant="ghost" size="sm">
               <span className="font-medium">@var404</span>
             </Button>
@@ -47,7 +47,7 @@ export function Navigation() {
         />
       </div>
       <div className="hidden items-center gap-0.5 md:flex md:justify-between">
-        <Button variant="ghost" size="sm">
+        <Button variant="ghost" size="sm" className="">
           <span className="font-medium">@var404</span>
         </Button>
         <Button variant="ghost" size="sm">
