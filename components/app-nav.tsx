@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Blocks, GraduationCap, UsersRound, LogOut } from "lucide-react";
+import { Blocks, GraduationCap, UsersRound, User, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export function Navigation() {
@@ -10,7 +10,7 @@ export function Navigation() {
   const teachPath = pathname.includes("/teach");
 
   return (
-    <nav className="flex flex-col justify-between bg-primary-200 p-2 md:h-dvh md:p-3">
+    <nav className="flex flex-col justify-between w-full max-w-full md:w-fit bg-primary-200 p-2 md:h-dvh md:p-3">
       <div className="flex flex-col gap-3">
         <div className="flex items-center justify-between gap-3 md:flex-col md:items-start">
           <Link href="/" className="flex items-center gap-2 p-1 md:p-4">
@@ -35,9 +35,9 @@ export function Navigation() {
               </Link>
             </Button>
           </div>
-          <div className="flex items-center gap-0.5 self-end overflow-hidden md:hidden">
+          <div className="flex items-center self-center gap-0.5 overflow-hidden md:hidden">
             <Button variant="ghost" size="sm">
-              <span className="font-medium">@var404</span>
+              <User />
             </Button>
           </div>
         </div>
