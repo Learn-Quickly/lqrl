@@ -51,16 +51,22 @@ export default function Home() {
           title="Мнемотехніки Ведмедика Медика"
           description="Розвиток когнітивних навичок для дітей"
           color="red"
+          length="2h 30m"
+          progress="4/54 lessons"
         />
         <CourseCard
           title="Професійний розвиток вчителів"
           description="Вчимося навчати"
           color="yellow"
+          length="8h 15m"
+          progress="3/18 lessons"
         />
         <CourseCard
           title="AdVanced React"
           description="Learn how to connect useState with Pocketbase"
           color="blue"
+          length="3h"
+          progress="1/4 lessons"
         />
         <CourseCardNew />
       </div>
