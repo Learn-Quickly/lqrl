@@ -16,6 +16,7 @@ import {
   CircleDashed,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export function CourseCard({
   title,
@@ -26,6 +27,7 @@ export function CourseCard({
   length,
   progress,
   intent = "learn",
+  href,
 }: {
   title: string;
   description?: string;
@@ -35,6 +37,7 @@ export function CourseCard({
   length?: string;
   progress?: string;
   intent?: "learn" | "teach";
+  href?: string;
 }) {
   return (
     <Card className="flex flex-col">
@@ -76,10 +79,14 @@ export function CourseCard({
         )}
       </CardContent>
       <CardFooter className="flex w-full justify-end">
-        <Button variant="outline" className="items-center">
-          {intent == "learn" && "Learn"} {intent == "teach" && "Edit"}{" "}
-          <MoveRight size="16" className="ml-2" />
-        </Button>
+        {href && (
+          <Button asChild variant="outline" className="items-center">
+            <Link href={href}>
+              {intent == "learn" && "Learn"} {intent == "teach" && "Edit"}{" "}
+              <MoveRight size="16" className="ml-2" />
+            </Link>
+          </Button>
+        )}
       </CardFooter>
     </Card>
   );

@@ -51,6 +51,7 @@ export default function Teach() {
             users={217}
             price={0}
             intent="teach"
+            href="/teach/course-id/lesson-id/task-id"
           />
           <CourseCard
             title="Професійний розвиток вчителів"
@@ -59,6 +60,7 @@ export default function Teach() {
             users={14}
             price={27}
             intent="teach"
+            href="/teach/course-id/lesson-id/task-id"
           />
           <CourseCardNew />
         </div>
