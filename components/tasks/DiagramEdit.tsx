@@ -11,18 +11,18 @@ import ReactFlow, {
   useReactFlow,
 } from "reactflow";
 import "reactflow/dist/style.css";
-import { RFState, useFlowStore } from "@/store";
+import { getFlowStore } from "@/store";
 import { shallow } from "zustand/shallow";
-
-const selector = (state: RFState) => ({
-  nodes: state.nodes,
-  setNodes: state.setNodes,
-  edges: state.edges,
-  setEdges: state.setEdges,
-  onNodesChange: state.onNodesChange,
-  onEdgesChange: state.onEdgesChange,
-  onConnect: state.onConnect,
-});
+import { Eye } from "lucide-react";
+import { Toggle } from "@/components/ui/toggle";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { HeaderNode } from "@/components/nodes/Header";
+import { useParams } from "next/navigation";
 
 function Sidebar() {
   const onDragStart = (event: any, nodeType: any) => {
@@ -35,8 +35,8 @@ function Sidebar() {
       <div className="description">
         Add nodes to the diagram by dragging them from the sidebar
       </div>
-      <div onDragStart={(event) => onDragStart(event, "input")} draggable>
-        Input Node
+      <div onDragStart={(event) => onDragStart(event, "Header")} draggable>
+        Header Node
       </div>
       <div onDragStart={(event) => onDragStart(event, "default")} draggable>
         Default Node
@@ -51,9 +51,23 @@ function Sidebar() {
 let id = 0;
 const getId = () => `dndnode_${id++}`;
 
+const nodeTypes = {
+  Header: HeaderNode,
+};
+
 function Diagram() {
-  const { nodes, setNodes, edges, onNodesChange, onEdgesChange, onConnect } =
-    useFlowStore(selector, shallow);
+  const { task: taskId } = useParams<{ task: string }>();
+  const useFlowStore = getFlowStore({ taskId, defaultDisplayMode: "edit" });
+  const {
+    nodes,
+    setNodes,
+    edges,
+    onNodesChange,
+    onEdgesChange,
+    onConnect,
+    displayMode,
+    setDisplayMode,
+  } = useFlowStore((state) => state, shallow);
   const reactFlow = useReactFlow();
 
   const onDragOver = useCallback((event: any) => {
@@ -93,6 +107,7 @@ function Diagram() {
       <Sidebar />
       <ReactFlow
         nodes={nodes}
+        nodeTypes={nodeTypes}
         edges={edges}
         proOptions={{ hideAttribution: true }}
         onNodesChange={onNodesChange}
@@ -103,6 +118,25 @@ function Diagram() {
         className="rounded-tl-2xl border border-stone-300 bg-stone-50"
         fitView
       >
+        <Panel position="top-right" className="bg-white">
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger>
+                <Toggle
+                  variant="outline"
+                  aria-label="Toggle preview"
+                  pressed={displayMode === "view"}
+                  onPressedChange={(pressed) =>
+                    setDisplayMode(pressed ? "view" : "edit")
+                  }
+                >
+                  <Eye className="h-4 w-4" />
+                </Toggle>
+              </TooltipTrigger>
+              <TooltipContent>Preview</TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        </Panel>
         <Controls />
         <MiniMap />
         <Background variant={BackgroundVariant.Dots} gap={12} size={1} />
