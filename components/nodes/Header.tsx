@@ -19,7 +19,7 @@ export function HeaderNode({ id, data }: { id: string; data: {} }) {
       <>
         <Handle type="target" position={Position.Top} />
         <div className="flex flex-col border border-stone-500 bg-stone-50 p-1">
-          <label htmlFor="text" className="text-sm">
+          <label htmlFor="text" className="text-xs">
             Header
           </label>
           <input

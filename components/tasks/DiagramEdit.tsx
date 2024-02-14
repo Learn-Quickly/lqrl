@@ -14,6 +14,7 @@ import "reactflow/dist/style.css";
 import { getFlowStore } from "@/store";
 import { shallow } from "zustand/shallow";
 import { Eye } from "lucide-react";
+import { IconHeading } from "@tabler/icons-react";
 import { Toggle } from "@/components/ui/toggle";
 import {
   Tooltip,
@@ -23,33 +24,8 @@ import {
 } from "@/components/ui/tooltip";
 import { HeaderNode } from "@/components/nodes/Header";
 import { useParams } from "next/navigation";
-
-function Sidebar() {
-  const onDragStart = (event: any, nodeType: any) => {
-    event.dataTransfer.setData("application/reactflow", nodeType);
-    event.dataTransfer.effectAllowed = "move";
-  };
-
-  return (
-    <aside className="flex gap-4 p-4 md:h-full md:flex-col">
-      <div className="description">
-        Add nodes to the diagram by dragging them from the sidebar
-      </div>
-      <div onDragStart={(event) => onDragStart(event, "Header")} draggable>
-        Header Node
-      </div>
-      <div onDragStart={(event) => onDragStart(event, "default")} draggable>
-        Default Node
-      </div>
-      <div onDragStart={(event) => onDragStart(event, "output")} draggable>
-        Output Node
-      </div>
-    </aside>
-  );
-}
-
-let id = 0;
-const getId = () => `dndnode_${id++}`;
+import { Button } from "@/components/ui/button";
+import { nanoid } from "nanoid";
 
 const nodeTypes = {
   Header: HeaderNode,
@@ -70,28 +46,14 @@ function Diagram() {
   } = useFlowStore((state) => state, shallow);
   const reactFlow = useReactFlow();
 
-  const onDragOver = useCallback((event: any) => {
-    event.preventDefault();
-    event.dataTransfer.dropEffect = "move";
-  }, []);
-
-  const onDrop = useCallback(
-    (event: any) => {
-      event.preventDefault();
-
-      const type = event.dataTransfer.getData("application/reactflow");
-
-      // check if the dropped element is valid
-      if (typeof type === "undefined" || !type) {
-        return;
-      }
-
+  const onNewNodeClick = useCallback(
+    (event: any, type: string) => {
       const position = reactFlow.screenToFlowPosition({
-        x: event.clientX,
+        x: event.clientX + 75,
         y: event.clientY,
       });
       const newNode = {
-        id: getId(),
+        id: nanoid(),
         type,
         position,
         data: { label: `${type} node` },
@@ -104,7 +66,6 @@ function Diagram() {
 
   return (
     <div className="flex h-full w-full flex-col md:flex-row">
-      <Sidebar />
       <ReactFlow
         nodes={nodes}
         nodeTypes={nodeTypes}
@@ -113,9 +74,7 @@ function Diagram() {
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
-        onDrop={onDrop}
-        onDragOver={onDragOver}
-        className="rounded-tl-2xl border border-stone-300 bg-stone-50"
+        className="border-t border-stone-300 bg-stone-50"
         fitView
       >
         <Panel position="top-right" className="bg-white">
@@ -137,6 +96,20 @@ function Diagram() {
             </Tooltip>
           </TooltipProvider>
         </Panel>
+        {displayMode == "edit" && (
+          <div className="absolute left-4 top-1/2 z-10 flex -translate-y-1/2 flex-col gap-1 rounded-2xl bg-stone-700 bg-opacity-10 p-1">
+            <div className="flex flex-col gap-1.5 rounded-xl bg-white p-2">
+              <Button
+                variant="ghost"
+                className="flex size-16 flex-col gap-1"
+                onClick={(e) => onNewNodeClick(e, "Header")}
+              >
+                <IconHeading className="size-5" />
+                <span className="text-xs">Header</span>
+              </Button>
+            </div>
+          </div>
+        )}
         <Controls />
         <MiniMap />
         <Background variant={BackgroundVariant.Dots} gap={12} size={1} />
