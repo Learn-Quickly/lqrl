@@ -3,6 +3,7 @@ import { Inter as FontSans } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { Navigation } from "@/components/app-nav";
+import { Providers } from "@/app/providers";
 
 const fontSans = FontSans({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -25,10 +26,10 @@ export default function RootLayout({
           fontSans.variable,
         )}
       >
-        <Navigation />
-        <div className="w-full max-w-full overflow-y-auto">
-        {children}
-        </div>
+        <Providers>
+          <Navigation />
+          <div className="w-full max-w-full overflow-y-auto">{children}</div>
+        </Providers>
       </body>
     </html>
   );
