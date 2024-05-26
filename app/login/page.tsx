@@ -3,13 +3,15 @@
 import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { useApiLoginHandler } from "@/dist/kubb";
-import { localstorageKeys } from "@/constants";
 import Link from "next/link";
+import { useAuthStore } from "@/store/auth";
 
 export default function Login() {
   const router = useRouter();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+
+  const { login: storeLogin } = useAuthStore();
 
   const basicAuth = useMemo(() => {
     return Buffer.from(`${username}:${password}`).toString("base64");
@@ -18,15 +20,11 @@ export default function Login() {
   const login = useApiLoginHandler({
     mutation: {
       onSuccess: (data) => {
-        localStorage.setItem(
-          localstorageKeys.accessToken,
-          data.result.access_token,
-        );
-        localStorage.setItem(
-          localstorageKeys.refreshToken,
-          data.result.refresh_token,
-        );
-        localStorage.setItem(localstorageKeys.username, username);
+        storeLogin({
+          username,
+          accessToken: data.result.access_token,
+          refreshToken: data.result.refresh_token,
+        });
         router.push("/");
       },
       onError: (error) => {

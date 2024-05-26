@@ -1,16 +1,24 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Blocks, GraduationCap, UsersRound, User, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useAuthStore } from "@/store/auth";
 
 export function Navigation() {
   const pathname = usePathname();
   const teachPath = pathname.includes("/teach");
+  const { isLogged, username, logout } = useAuthStore();
+  const router = useRouter();
+
+  const handleLogout = () => {
+    logout();
+    router.push("/login");
+  };
 
   return (
-    <nav className="flex flex-col justify-between w-full max-w-full md:w-fit bg-primary-200 p-2 md:h-dvh md:p-3">
+    <nav className="flex w-full max-w-full flex-col justify-between bg-primary-200 p-2 md:h-dvh md:w-fit md:p-3">
       <div className="flex flex-col gap-3">
         <div className="flex items-center justify-between gap-3 md:flex-col md:items-start">
           <Link href="/" className="flex items-center gap-2 p-1 md:p-4">
@@ -35,7 +43,7 @@ export function Navigation() {
               </Link>
             </Button>
           </div>
-          <div className="flex items-center self-center gap-0.5 overflow-hidden md:hidden">
+          <div className="flex items-center gap-0.5 self-center overflow-hidden md:hidden">
             <Button variant="ghost" size="sm">
               <User />
             </Button>
@@ -46,14 +54,16 @@ export function Navigation() {
           className="flex flex-col gap-2 p-2 empty:hidden"
         />
       </div>
-      <div className="hidden items-center gap-0.5 md:flex md:justify-between">
-        <Button variant="ghost" size="sm" className="">
-          <span className="font-medium">@var404</span>
-        </Button>
-        <Button variant="ghost" size="sm">
-          <LogOut size="18" />
-        </Button>
-      </div>
+      {isLogged && (
+        <div className="hidden items-center gap-0.5 md:flex md:justify-between">
+          <Button variant="ghost" size="sm" className="">
+            <span className="font-medium">@{username}</span>
+          </Button>
+          <Button variant="ghost" size="sm" onClick={handleLogout}>
+            <LogOut size="18" />
+          </Button>
+        </div>
+      )}
     </nav>
   );
 }

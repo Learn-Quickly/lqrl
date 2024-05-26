@@ -3,17 +3,17 @@
 import axios from "axios";
 
 import type { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
-import { localstorageKeys } from "@/constants";
+import { authStoreKey } from "@/store/auth";
 
 const AXIOS_BASE = "http://localhost:8080";
 
 const accessToken =
   typeof window !== "undefined"
-    ? localStorage.getItem(localstorageKeys.accessToken)
+    ? JSON.parse(localStorage.getItem(authStoreKey) ?? "{}")?.state.accessToken
     : null;
 const refreshToken =
   typeof window !== "undefined"
-    ? localStorage.getItem(localstorageKeys.refreshToken)
+    ? JSON.parse(localStorage.getItem(authStoreKey) ?? "{}")?.state.refreshToken
     : null;
 const AXIOS_HEADERS: AxiosRequestConfig["headers"] | undefined =
   accessToken && refreshToken
