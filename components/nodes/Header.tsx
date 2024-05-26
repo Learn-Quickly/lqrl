@@ -1,18 +1,23 @@
 import { useCallback } from "react";
 import { Handle, Position } from "reactflow";
-import { getFlowStore } from "@/store";
+import { useDiagramStore } from "@/store/diagram";
 import { useParams } from "next/navigation";
 
+let count = 1;
 export function HeaderNode({ id, data }: { id: string; data: {} }) {
   const { task: taskId } = useParams<{ task: string }>();
-  const useFlowStore = getFlowStore({ taskId });
-  const { setHeaderTitle, displayMode } = useFlowStore();
-  const onChange = useCallback((evt: any) => {
-    setHeaderTitle(id, evt.target.value);
-  }, []);
-  const title = useFlowStore(
-    (state) => state.nodes.find((n) => n.id === id)?.data.label,
+  const { nodes, edges } = useDiagramStore((state) => state.diagrams[taskId]);
+  const { displayMode } = useDiagramStore((state) => ({
+    displayMode: state.diagrams[taskId]?.displayMode,
+  }));
+  const onChange = useCallback(
+    (evt: any) => {
+      useDiagramStore.getState().setHeaderTitle(taskId, id, evt.target.value);
+    },
+    [taskId, id],
   );
+  const title = nodes.find((n) => n.id === id)?.data.label;
+  count++;
 
   if (displayMode === "edit") {
     return (
@@ -20,7 +25,7 @@ export function HeaderNode({ id, data }: { id: string; data: {} }) {
         <Handle type="target" position={Position.Top} />
         <div className="flex flex-col border border-stone-500 bg-stone-50 p-1">
           <label htmlFor="text" className="text-xs">
-            Header
+            Header {count}
           </label>
           <input
             id="text"

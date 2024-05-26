@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import ReactFlow, {
   ReactFlowProvider,
   Background,
@@ -11,8 +11,6 @@ import ReactFlow, {
   useReactFlow,
 } from "reactflow";
 import "reactflow/dist/style.css";
-import { getFlowStore } from "@/store";
-import { shallow } from "zustand/shallow";
 import { Eye } from "lucide-react";
 import { IconHeading } from "@tabler/icons-react";
 import { Toggle } from "@/components/ui/toggle";
@@ -26,6 +24,7 @@ import { HeaderNode } from "@/components/nodes/Header";
 import { useParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { nanoid } from "nanoid";
+import { useDiagramStore } from "@/store/diagram";
 
 const nodeTypes = {
   Header: HeaderNode,
@@ -33,17 +32,21 @@ const nodeTypes = {
 
 function Diagram() {
   const { task: taskId } = useParams<{ task: string }>();
-  const useFlowStore = getFlowStore({ taskId, defaultDisplayMode: "edit" });
-  const {
-    nodes,
-    setNodes,
-    edges,
-    onNodesChange,
-    onEdgesChange,
-    onConnect,
-    displayMode,
-    setDisplayMode,
-  } = useFlowStore((state) => state, shallow);
+
+  const { diagrams, initializeDiagram } = useDiagramStore((state) => ({
+    diagrams: state.diagrams,
+    initializeDiagram: state.initializeDiagram,
+  }));
+
+  const [isInitialized, setIsInitialized] = useState(false);
+
+  useEffect(() => {
+    if (!diagrams[taskId]) {
+      initializeDiagram(taskId, "view");
+    }
+    setIsInitialized(true);
+  }, [taskId, diagrams, initializeDiagram]);
+
   const reactFlow = useReactFlow();
 
   const onNewNodeClick = useCallback(
@@ -59,34 +62,47 @@ function Diagram() {
         data: { label: `${type} node` },
       };
 
-      setNodes([newNode]);
+      useDiagramStore.getState().setNodes(taskId, [newNode]);
     },
-    [reactFlow],
+    [taskId, reactFlow],
   );
+
+  const memoizedNodeTypes = useMemo(() => nodeTypes, [nodeTypes]);
+
+  if (!isInitialized) return <div />;
+
+  const {
+    nodes = [],
+    edges = [],
+    displayMode = "view",
+  } = diagrams[taskId] || {};
+
+  const { onNodesChange, onEdgesChange, onConnect, setDisplayMode } =
+    useDiagramStore.getState();
 
   return (
     <div className="flex h-full w-full flex-col md:flex-row">
       <ReactFlow
         nodes={nodes}
-        nodeTypes={nodeTypes}
+        nodeTypes={memoizedNodeTypes}
         edges={edges}
         proOptions={{ hideAttribution: true }}
-        onNodesChange={onNodesChange}
-        onEdgesChange={onEdgesChange}
-        onConnect={onConnect}
+        onNodesChange={(changes) => onNodesChange(taskId, changes)}
+        onEdgesChange={(changes) => onEdgesChange(taskId, changes)}
+        onConnect={(connection) => onConnect(taskId, connection)}
         className="border-t border-stone-300 bg-stone-50"
         fitView
       >
         <Panel position="top-right" className="bg-white">
           <TooltipProvider>
             <Tooltip>
-              <TooltipTrigger>
+              <TooltipTrigger asChild>
                 <Toggle
                   variant="outline"
                   aria-label="Toggle preview"
                   pressed={displayMode === "view"}
                   onPressedChange={(pressed) =>
-                    setDisplayMode(pressed ? "view" : "edit")
+                    setDisplayMode(taskId, pressed ? "view" : "edit")
                   }
                 >
                   <Eye className="h-4 w-4" />

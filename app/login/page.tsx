@@ -1,15 +1,15 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { useApiLoginHandler, useApiRegisterHandler } from "@/dist/kubb";
+import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
+import { useApiLoginHandler } from "@/dist/kubb";
 import { localstorageKeys } from "@/constants";
 import Link from "next/link";
 
-export default function Register() {
+export default function Login() {
+  const router = useRouter();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const router = useRouter();
 
   const basicAuth = useMemo(() => {
     return Buffer.from(`${username}:${password}`).toString("base64");
@@ -40,26 +40,15 @@ export default function Register() {
     },
   });
 
-  const register = useApiRegisterHandler({
-    mutation: {
-      onSuccess: () => {
-        login.mutate({} as unknown as void);
-      },
-      onError: (error) => {
-        console.log("register error", error);
-      },
-    },
-  });
-
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    register.mutate({ data: { username, pwd: password } });
+    login.mutate({} as unknown as void);
   }
 
   return (
     <div className="flex min-h-full flex-col items-center justify-center p-12 md:p-24">
-      <h1 className="text-4xl font-bold">Реєстрація</h1>
-      <p className="mt-4 text-lg text-primary-600">Створення нового акаунту</p>
+      <h1 className="text-4xl font-bold">Вхід</h1>
+      <p className="mt-4 text-lg text-primary-600">Вхід у систему LQRL</p>
       <form onSubmit={handleSubmit} className="mt-8 flex flex-col items-center">
         <input
           type="text"
@@ -79,13 +68,13 @@ export default function Register() {
           type="submit"
           className="mt-4 rounded-md bg-primary-500 px-4 py-2 text-white"
         >
-          Зареєструватися
+          Увійти
         </button>
-        {register.isError && (
-          <div className="mt-4 text-red-500">Помилка реєстрації</div>
+        {login.isError && (
+          <div className="mt-4 text-red-500">Помилка входу в систему</div>
         )}
-        <Link href="/login" className="mt-4 text-primary-600">
-          Вхід
+        <Link href="/register" className="mt-4 text-primary-600">
+          Реєстрація
         </Link>
       </form>
     </div>
