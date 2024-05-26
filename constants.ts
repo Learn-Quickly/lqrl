@@ -1,5 +1,5 @@
-export const localstorageKeys = Object.freeze({
-  username: "username",
-  accessToken: "accessToken",
-  refreshToken: "refreshToken",
-});
+export const loginReasons = {
+  usernameUpdated: "usernameUpdated",
+  passwordUpdated: "passwordUpdated",
+};
+export const authStoreKey = "auth-storage";

@@ -1,13 +1,17 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useApiLoginHandler } from "@/dist/kubb";
 import Link from "next/link";
 import { useAuthStore } from "@/store/auth";
+import { loginReasons } from "@/constants";
 
 export default function Login() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const reason = searchParams.get("reason");
+
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
@@ -47,6 +51,16 @@ export default function Login() {
     <div className="flex min-h-full flex-col items-center justify-center p-12 md:p-24">
       <h1 className="text-4xl font-bold">Вхід</h1>
       <p className="mt-4 text-lg text-primary-600">Вхід у систему LQRL</p>
+      {reason === loginReasons.usernameUpdated && (
+        <div className="mt-4 text-sm font-semibold text-green-500">
+          Імʼя користувача оновлено
+        </div>
+      )}
+      {reason === loginReasons.passwordUpdated && (
+        <div className="mt-4 text-sm font-semibold text-green-500">
+          Пароль оновлено
+        </div>
+      )}
       <form onSubmit={handleSubmit} className="mt-8 flex flex-col items-center">
         <input
           type="text"

@@ -3,7 +3,7 @@
 import axios from "axios";
 
 import type { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
-import { authStoreKey } from "@/store/auth";
+import { authStoreKey } from "@/constants";
 
 const AXIOS_BASE = "http://localhost:8080";
 
