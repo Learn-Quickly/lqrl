@@ -3,3 +3,5 @@ export const loginReasons = {
   passwordUpdated: "passwordUpdated",
 };
 export const authStoreKey = "auth-storage";
+
+export type CourseColor = "red" | "blue" | "yellow" | "green";

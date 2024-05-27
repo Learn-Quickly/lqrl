@@ -9,7 +9,7 @@ import { useApiChangePwdHandler, useApiUpdateUserHandler } from "@/dist/kubb";
 import { useRouter } from "next/navigation";
 import { loginReasons } from "@/constants";
 
-export default function Component() {
+export default function Profile() {
   const router = useRouter();
   const { username: storeUsername, logout } = useAuthStore();
 

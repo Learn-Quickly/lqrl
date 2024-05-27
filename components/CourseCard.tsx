@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { CourseColor } from "@/constants";
 
 export function CourseCard({
   title,
@@ -31,7 +32,7 @@ export function CourseCard({
 }: {
   title: string;
   description?: string;
-  color: "red" | "blue" | "yellow";
+  color: CourseColor;
   users?: number;
   price?: number;
   length?: string;
@@ -46,6 +47,7 @@ export function CourseCard({
           color == "red" && "bg-red-50",
           color == "yellow" && "bg-yellow-50",
           color == "blue" && "bg-blue-50",
+          color == "green" && "bg-green-50",
           "flex flex-1 flex-col justify-end",
         )}
       >
@@ -95,9 +97,11 @@ export function CourseCard({
 export function CourseCardNew() {
   return (
     <Card>
-      <CardContent className="flex h-full items-center justify-center p-6">
-        <Plus />
-      </CardContent>
+      <Link href="/course/new">
+        <CardContent className="flex h-full items-center justify-center p-6">
+          <Plus />
+        </CardContent>
+      </Link>
     </Card>
   );
 }
