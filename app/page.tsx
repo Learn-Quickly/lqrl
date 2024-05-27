@@ -50,6 +50,7 @@ export default function Home() {
         <CourseCard
           title="Мнемотехніки Ведмедика Медика"
           description="Розвиток когнітивних навичок для дітей"
+          state="Published"
           color="red"
           length="2h 30m"
           progress="4/54 lessons"
@@ -57,6 +58,7 @@ export default function Home() {
         <CourseCard
           title="Професійний розвиток вчителів"
           description="Вчимося навчати"
+          state="Published"
           color="yellow"
           length="8h 15m"
           progress="3/18 lessons"
@@ -64,6 +66,7 @@ export default function Home() {
         <CourseCard
           title="AdVanced React"
           description="Learn how to connect useState with Pocketbase"
+          state="Published"
           color="blue"
           length="3h"
           progress="1/4 lessons"

@@ -9,7 +9,7 @@ import {
 import { cn } from "@/lib/utils";
 import {
   Plus,
-  Users,
+  BookCheck,
   MoveRight,
   CircleDollarSign,
   Calendar,
@@ -17,13 +17,24 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { CourseColor } from "@/constants";
+import { CourseColor, CourseState } from "@/constants";
+
+const translateCourseState = (state: CourseState) => {
+  switch (state) {
+    case "Draft":
+      return "Чернетка";
+    case "Published":
+      return "Опубліковано";
+    case "Archived":
+      return "Архівовано";
+  }
+};
 
 export function CourseCard({
   title,
   description,
   color,
-  users,
+  state,
   price,
   length,
   progress,
@@ -33,7 +44,7 @@ export function CourseCard({
   title: string;
   description?: string;
   color: CourseColor;
-  users?: number;
+  state: CourseState;
   price?: number;
   length?: string;
   progress?: string;
@@ -55,12 +66,10 @@ export function CourseCard({
         <CardDescription>{description}</CardDescription>
       </CardHeader>
       <CardContent className="flex flex-col gap-2 p-4">
-        {users && (
-          <div className="flex items-center gap-2">
-            <Users size="16" />
-            <span className="text-sm">{users}</span>
-          </div>
-        )}
+        <div className="flex items-center gap-2">
+          <BookCheck size="16" />
+          <span className="text-sm">{translateCourseState(state)}</span>
+        </div>
         {price != undefined && (
           <div className="flex items-center gap-2">
             <CircleDollarSign size="16" />

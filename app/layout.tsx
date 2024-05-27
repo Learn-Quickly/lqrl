@@ -4,6 +4,7 @@ import "./globals.css";
 import { cn } from "@/lib/utils";
 import { Navigation } from "@/components/app-nav";
 import { Providers } from "@/app/providers";
+import { Suspense } from "react";
 
 const fontSans = FontSans({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -27,8 +28,10 @@ export default function RootLayout({
         )}
       >
         <Providers>
-          <Navigation />
-          <div className="w-full max-w-full overflow-y-auto">{children}</div>
+          <Suspense>
+            <Navigation />
+            <div className="w-full max-w-full overflow-y-auto">{children}</div>
+          </Suspense>
         </Providers>
       </body>
     </html>

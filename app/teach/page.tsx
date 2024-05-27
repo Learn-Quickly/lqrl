@@ -13,6 +13,8 @@ import {
 import { CourseCard, CourseCardNew } from "@/components/CourseCard";
 import { createPortal } from "react-dom";
 import { useEffect, useState } from "react";
+import { useApiGetCreatedCoursesHandler } from "@/dist/kubb";
+import { CourseColor } from "@/constants";
 
 export default function Teach() {
   const [navLinksPortal, setNavLinksPortal] = useState<HTMLElement | null>(
@@ -22,6 +24,11 @@ export default function Teach() {
   useEffect(() => {
     setNavLinksPortal(document.getElementById("navLinksPortal"));
   }, []);
+
+  const createdCourses = useApiGetCreatedCoursesHandler();
+  useEffect(() => {
+    console.log("createdCourses", createdCourses.data);
+  }, [createdCourses]);
 
   return (
     <>
@@ -44,24 +51,18 @@ export default function Teach() {
           className="grid gap-4 text-center sm:grid-cols-2 md:grid-cols-1 lg:mb-0 lg:grid-cols-2 lg:text-left xl:grid-cols-3"
           style={{ gridAutoRows: "1fr" }}
         >
-          <CourseCard
-            title="Мнемотехніки Ведмедика Медика"
-            description="Розвиток когнітивних навичок для дітей"
-            color="red"
-            users={217}
-            price={0}
-            intent="teach"
-            href="/teach/course-id/lesson-id/task-uuid1"
-          />
-          <CourseCard
-            title="Професійний розвиток вчителів"
-            description="Вчимося навчати"
-            color="yellow"
-            users={14}
-            price={27}
-            intent="teach"
-            href="/teach/course-id/lesson-id/task-uuid2"
-          />
+          {createdCourses.data?.map((course) => (
+            <CourseCard
+              key={course.id}
+              title={course.title}
+              description={course.description}
+              color={course.color as CourseColor}
+              state={course.state}
+              price={course.price}
+              intent="teach"
+              href="/teach/course-id/lesson-id/task-uuid1"
+            />
+          ))}
           <CourseCardNew />
         </div>
         <Pagination>
