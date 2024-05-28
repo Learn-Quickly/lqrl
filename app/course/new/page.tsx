@@ -1,6 +1,8 @@
 "use client";
 
 import { ChangeEvent, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -10,6 +12,9 @@ import { CourseColorBadge } from "@/components/CourseColorBadge";
 import { CourseColor } from "@/constants";
 
 export default function CourseNew() {
+  const queryClient = useQueryClient();
+  const router = useRouter();
+
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState(0);
@@ -22,8 +27,11 @@ export default function CourseNew() {
 
   const createCourse = useApiCreateCourseDraftHandler({
     mutation: {
-      onSuccess: (data) => {
-        console.log("create course success", data);
+      onSuccess: async () => {
+        await queryClient.invalidateQueries({
+          queryKey: [{ url: "/api/course/get_created_courses" }],
+        });
+        router.push("/teach");
       },
     },
   });

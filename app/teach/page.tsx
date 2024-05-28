@@ -25,7 +25,11 @@ export default function Teach() {
     setNavLinksPortal(document.getElementById("navLinksPortal"));
   }, []);
 
-  const createdCourses = useApiGetCreatedCoursesHandler();
+  const createdCourses = useApiGetCreatedCoursesHandler({
+    query: {
+      refetchOnMount: true,
+    },
+  });
   useEffect(() => {
     console.log("createdCourses", createdCourses.data);
   }, [createdCourses]);

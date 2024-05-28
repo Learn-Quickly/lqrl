@@ -45,7 +45,7 @@ export function Navigation() {
           </div>
           <div className="flex items-center gap-0.5 self-center overflow-hidden md:hidden">
             <Button variant="ghost" size="sm" asChild>
-              <Link href="/profile">
+              <Link href={isLogged ? "/profile" : "/login"}>
                 <User />
               </Link>
             </Button>
@@ -56,7 +56,7 @@ export function Navigation() {
           className="flex flex-col gap-2 p-2 empty:hidden"
         />
       </div>
-      {isLogged && (
+      {isLogged ? (
         <div className="hidden items-center gap-0.5 md:flex md:justify-between">
           <Button variant="ghost" size="sm" className="" asChild>
             <Link href="/profile">
@@ -65,6 +65,12 @@ export function Navigation() {
           </Button>
           <Button variant="ghost" size="sm" onClick={handleLogout}>
             <LogOut size="18" />
+          </Button>
+        </div>
+      ) : (
+        <div className="hidden items-center gap-0.5 md:flex md:justify-between">
+          <Button variant="ghost" size="sm" className="w-full" asChild>
+            <Link href="/login">Увійти</Link>
           </Button>
         </div>
       )}
