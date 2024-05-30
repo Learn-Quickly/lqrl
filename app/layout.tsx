@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import { Navigation } from "@/components/app-nav";
 import { Providers } from "@/app/providers";
 import { Suspense } from "react";
+import { Toaster } from "@/components/ui/sonner";
 
 const fontSans = FontSans({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -31,6 +32,7 @@ export default function RootLayout({
           <Suspense>
             <Navigation />
             <div className="w-full max-w-full overflow-y-auto">{children}</div>
+            <Toaster />
           </Suspense>
         </Providers>
       </body>

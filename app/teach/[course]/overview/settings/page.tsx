@@ -5,13 +5,19 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { CourseColorBadge } from "@/components/CourseColorBadge";
-import { useApiGetCourseHandler, useApiUpdateCourseHandler } from "@/dist/kubb";
+import {
+  useApiArchiveCourseHandler,
+  useApiGetCourseHandler,
+  useApiPublishCourseHandler,
+  useApiUpdateCourseHandler,
+} from "@/dist/kubb";
 import { useApiSetCourseImgHandler } from "@/hooks/useApiSetCourseImgHandler";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { CourseColor } from "@/constants";
 import { Button } from "@/components/ui/button";
 import { useQueryClient } from "@tanstack/react-query";
 import { UploadIcon } from "lucide-react";
+import { toast } from "sonner";
 
 const isAllowedExtension = (file: any) => {
   const allowedExtensions = [".pdf"];
@@ -21,6 +27,7 @@ const isAllowedExtension = (file: any) => {
 
 export default function CourseSettings() {
   const { course: courseId } = useParams<{ course: string }>();
+  const route = useRouter();
   const course = useApiGetCourseHandler(parseInt(courseId));
   const [title, setTitle] = useState(course.data?.title || "");
   const [description, setDescription] = useState(
@@ -52,6 +59,9 @@ export default function CourseSettings() {
             },
           ],
         });
+        toast("Курс успішно оновлено", {
+          description: "Зміни були збережені.",
+        });
       },
     },
   });
@@ -72,6 +82,54 @@ export default function CourseSettings() {
               url: "/api/course/get_course/:course_id",
             },
           ],
+        });
+      },
+    },
+  });
+
+  const archiveCourse = useApiArchiveCourseHandler({
+    mutation: {
+      onSuccess: async () => {
+        await queryClient.invalidateQueries({
+          queryKey: [
+            {
+              params: { courseId: parseInt(courseId) },
+              url: "/api/course/get_course/:course_id",
+            },
+          ],
+        });
+        toast("Курс успішно архівовано", {
+          description: "Курс більше не доступний для студентів.",
+          action: {
+            label: "Переглянути",
+            onClick: () => {
+              route.push(`/teach/${courseId}/overview/lessons`);
+            },
+          },
+        });
+      },
+    },
+  });
+
+  const publishCourse = useApiPublishCourseHandler({
+    mutation: {
+      onSuccess: async () => {
+        await queryClient.invalidateQueries({
+          queryKey: [
+            {
+              params: { courseId: parseInt(courseId) },
+              url: "/api/course/get_course/:course_id",
+            },
+          ],
+        });
+        toast("Курс успішно опубліковано", {
+          description: "Курс став доступним для студентів.",
+          action: {
+            label: "Переглянути",
+            onClick: () => {
+              route.push(`/teach/${courseId}/overview/lessons`);
+            },
+          },
         });
       },
     },
@@ -187,6 +245,40 @@ export default function CourseSettings() {
             onChange={onSelectFile}
           />
         </div>
+      </div>
+      <div className="flex flex-col gap-4 px-4 md:px-6">
+        <div>
+          <h2 className="text-2xl font-bold">Архівування курсу</h2>
+          <p className="mt-2 text-primary-500">
+            Архівуйте цей курс, щоб він більше не був доступний для студентів.
+          </p>
+        </div>
+        <Button
+          className="w-fit"
+          disabled={course.data?.state == "Archived"}
+          onClick={() =>
+            archiveCourse.mutate({ data: { course_id: parseInt(courseId) } })
+          }
+        >
+          Архівувати курс
+        </Button>
+      </div>
+      <div className="flex flex-col gap-4 px-4 md:px-6">
+        <div>
+          <h2 className="text-2xl font-bold">Публікація курсу</h2>
+          <p className="mt-2 text-primary-500">
+            Опублікуйте цей курс, щоб він став доступним для студентів.
+          </p>
+        </div>
+        <Button
+          className="w-fit"
+          onClick={() =>
+            publishCourse.mutate({ data: { course_id: parseInt(courseId) } })
+          }
+          disabled={course.data?.state == "Published"}
+        >
+          Опублікувати курс
+        </Button>
       </div>
     </section>
   );

@@ -8,16 +8,20 @@ import {
 } from "@/components/ui/card";
 import { StarIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { CreateLessonButton } from "@/components/lesson/CreateLessonButton";
 
 export default function Lessons() {
   return (
     <section className="w-full border-t py-12">
       <div className="grid gap-12 px-4 md:px-6">
-        <div className="grid gap-4">
-          <h2 className="text-2xl font-bold">Lessons</h2>
-          <p className="text-gray-500">
-            View and manage the lessons for this course.
-          </p>
+        <div className="flex flex-col justify-between gap-4 md:flex-row">
+          <div className="flex flex-col gap-4">
+            <h2 className="text-2xl font-bold">Уроки</h2>
+            <p className="text-gray-500">
+              Перегляд та управління уроками цього курсу.
+            </p>
+          </div>
+          <CreateLessonButton />
         </div>
         <div className="grid gap-6">
           <Card>
