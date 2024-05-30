@@ -53,7 +53,7 @@ export function Navigation() {
         </div>
         <div
           id="navLinksPortal"
-          className="flex flex-col gap-2 p-2 empty:hidden"
+          className="flex p-0.5 empty:hidden md:flex-col md:p-2"
         />
       </div>
       {isLogged ? (

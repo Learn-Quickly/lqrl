@@ -6,7 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { cn } from "@/lib/utils";
+import { cn, translateCourseState } from "@/lib/utils";
 import {
   Plus,
   BookCheck,
@@ -18,17 +18,6 @@ import {
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { CourseColor, CourseState } from "@/constants";
-
-const translateCourseState = (state: CourseState) => {
-  switch (state) {
-    case "Draft":
-      return "Чернетка";
-    case "Published":
-      return "Опубліковано";
-    case "Archived":
-      return "Архівовано";
-  }
-};
 
 export function CourseCard({
   title,
@@ -73,7 +62,7 @@ export function CourseCard({
         {price != undefined && (
           <div className="flex items-center gap-2">
             <CircleDollarSign size="16" />
-            <span className="text-sm">{price || "free"}</span>
+            <span className="text-sm">{price || "Безкоштовно"}</span>
           </div>
         )}
         {length && (

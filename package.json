@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "kubb": "kubb",
     "dev": "next dev",
     "build": "kubb && next build",
     "start": "next start",
