@@ -2,15 +2,7 @@
 
 import { useState } from "react";
 import { H1 } from "@/components/ui/typography";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
+import { Pagination } from "@/components/Pagination";
 import {
   DollarSignIcon,
   FilterIcon,
@@ -26,7 +18,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { CourseCard } from "@/components/CourseCard";
+import { CourseCard, CourseCardNotFound } from "@/components/CourseCard";
 import { Input } from "@/components/ui/input";
 import {
   Popover,
@@ -34,7 +26,7 @@ import {
   PopoverContent,
 } from "@/components/ui/popover";
 import { useApiGetCoursesHandler } from "@/dist/kubb";
-import { CourseColor } from "@/constants";
+import { CourseColor, paginationLimit } from "@/constants";
 import { clsx } from "clsx";
 import { useSearchParams } from "next/navigation";
 
@@ -57,15 +49,18 @@ function makeFilterString({
         ? { price: { $eq: 0 } }
         : { price: { $gt: 0 } };
   const nameFilter = name ? { title: { $contains: name } } : {};
+  const stateFilter = { state: { $eq: "Published" } };
 
-  const filters = [{ ...colorFilter, ...priceFilter, ...nameFilter }];
+  const filters = [
+    { ...colorFilter, ...priceFilter, ...nameFilter, ...stateFilter },
+  ];
 
-  return Object.keys(filters[0]).length ? JSON.stringify(filters) : undefined;
+  return JSON.stringify(filters);
 }
 
 export default function SearchCourses() {
   const searchParams = useSearchParams();
-  const page = searchParams.get("page");
+  const page = parseInt(searchParams.get("page") || "1");
 
   const [colorFilter, setColorFilter] = useState<ColorFilter>("any");
   const [priceFilter, setPriceFilter] = useState<PriceFilter>("any");
@@ -77,7 +72,7 @@ export default function SearchCourses() {
       price: priceFilter,
       name: nameFilter,
     }),
-    list_options: `{"limit": 4, "offset": ${page ? parseInt(page) * 4 : 0}}`,
+    list_options: `{"limit": ${paginationLimit}, "offset": ${(page - 1) * paginationLimit}}`,
   });
   return (
     <main className="flex min-h-full max-w-7xl grow flex-col gap-8 p-12 md:overflow-y-auto md:p-24">
@@ -192,7 +187,7 @@ export default function SearchCourses() {
         className="grid gap-4 text-center sm:grid-cols-2 md:grid-cols-1 lg:mb-0 lg:grid-cols-2 lg:text-left xl:grid-cols-3"
         style={{ gridAutoRows: "1fr" }}
       >
-        {courses.data?.map((course) => (
+        {courses.data?.courses.map((course) => (
           <CourseCard
             key={course.id}
             title={course.title}
@@ -203,31 +198,15 @@ export default function SearchCourses() {
             href={`/explore/${course.id}`}
           />
         ))}
+        {courses.data?.courses.length == 0 && <CourseCardNotFound />}
       </div>
-      <Pagination>
-        <PaginationContent>
-          <PaginationItem>
-            <PaginationPrevious href="#" />
-          </PaginationItem>
-          <PaginationItem>
-            <PaginationLink href="#">1</PaginationLink>
-          </PaginationItem>
-          <PaginationItem>
-            <PaginationLink href="#" isActive>
-              2
-            </PaginationLink>
-          </PaginationItem>
-          <PaginationItem>
-            <PaginationLink href="#">3</PaginationLink>
-          </PaginationItem>
-          <PaginationItem>
-            <PaginationEllipsis />
-          </PaginationItem>
-          <PaginationItem>
-            <PaginationNext href="#" />
-          </PaginationItem>
-        </PaginationContent>
-      </Pagination>
+      {courses.data && courses.data.count > paginationLimit && (
+        <Pagination
+          makeLink={(_page) => `/explore?page=${_page}`}
+          currentPage={page}
+          totalPages={Math.ceil(courses.data?.count / paginationLimit)}
+        />
+      )}
     </main>
   );
 }

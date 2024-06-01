@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Card,
   CardContent,
@@ -6,12 +8,14 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { BadgeIcon } from "lucide-react";
+import { useApiGetAttendants } from "@/dist/kubb";
+import { useParams } from "next/navigation";
 
-function Attendee() {
+function Attendee({ username }: { username: string }) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Jared Palmer</CardTitle>
+        <CardTitle>{username}</CardTitle>
         <CardDescription>Enrolled on May 1, 2023</CardDescription>
       </CardHeader>
       <CardContent>
@@ -47,18 +51,24 @@ function Attendee() {
 }
 
 export default function Attendees() {
+  const { course: courseId } = useParams<{ course: string }>();
+  const attendants = useApiGetAttendants({ course_id: parseInt(courseId) });
   return (
     <section className="w-full border-t py-12">
       <div className="grid gap-12 px-4 md:px-6">
         <div className="grid gap-4">
           <h2 className="text-2xl font-bold">Учні</h2>
-          <p className="text-gray-500">
-            Перегляд та управління учасниками цього курсу.
-          </p>
+          <p className="text-gray-500">Перегляд учасників цього курсу.</p>
         </div>
         <div className="grid gap-6">
-          <Attendee />
-          <Attendee />
+          {attendants.data?.map((attendee) => (
+            <Attendee key={attendee.id} username={attendee.username} />
+          ))}
+          {attendants.data?.length == 0 && (
+            <p className="text-gray-500">
+              Наразі на цьому курсі немає учасників.
+            </p>
+          )}
         </div>
       </div>
     </section>

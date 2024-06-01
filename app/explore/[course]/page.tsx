@@ -10,7 +10,6 @@ import {
 } from "@/components/ui/card";
 import { StarIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { CreateLessonButton } from "@/components/lesson/CreateLessonButton";
 import { useApiGetLessonsHandler } from "@/dist/kubb";
 import { useParams } from "next/navigation";
 
@@ -27,7 +26,6 @@ export default function Lessons() {
               Перегляд та управління уроками цього курсу.
             </p>
           </div>
-          <CreateLessonButton />
         </div>
         <div className="grid gap-6">
           {/*{lessons.data?.map((lesson) => (*/}

@@ -16,16 +16,25 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useApiCreateLessonHandler } from "@/dist/kubb";
 import { useParams } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
 
 export function CreateLessonButton() {
   const { course: courseId } = useParams<{ course: string }>();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
 
+  const queryClient = useQueryClient();
   const createLesson = useApiCreateLessonHandler({
     mutation: {
-      onSuccess: () => {
-        // TODO: Invalidate lessons query cache
+      onSuccess: async () => {
+        await queryClient.invalidateQueries({
+          queryKey: [
+            {
+              params: { courseId: parseInt(courseId) },
+              url: "/api/course/lesson/get_lessons/:course_id",
+            },
+          ],
+        });
       },
     },
   });

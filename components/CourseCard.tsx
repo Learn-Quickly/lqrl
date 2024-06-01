@@ -110,3 +110,13 @@ export function CourseCardNew() {
     </Card>
   );
 }
+
+export function CourseCardNotFound() {
+  return (
+    <Card>
+      <CardContent className="flex h-full items-center justify-center p-6">
+        <span className="text-sm text-gray-500">Курсів не знайдено</span>
+      </CardContent>
+    </Card>
+  );
+}
