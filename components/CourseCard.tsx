@@ -18,6 +18,7 @@ import {
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { CourseColor, CourseState } from "@/constants";
+import { clsx } from "clsx";
 
 export function CourseCard({
   title,
@@ -33,11 +34,11 @@ export function CourseCard({
   title: string;
   description?: string;
   color: CourseColor;
-  state: CourseState;
+  state?: CourseState;
   price?: number;
   length?: string;
   progress?: string;
-  intent?: "learn" | "teach";
+  intent?: "learn" | "teach" | "explore";
   href?: string;
 }) {
   return (
@@ -55,10 +56,12 @@ export function CourseCard({
         <CardDescription>{description}</CardDescription>
       </CardHeader>
       <CardContent className="flex flex-col gap-2 p-4">
-        <div className="flex items-center gap-2">
-          <BookCheck size="16" />
-          <span className="text-sm">{translateCourseState(state)}</span>
-        </div>
+        {!!state && (
+          <div className="flex items-center gap-2">
+            <BookCheck size="16" />
+            <span className="text-sm">{translateCourseState(state)}</span>
+          </div>
+        )}
         {price != undefined && (
           <div className="flex items-center gap-2">
             <CircleDollarSign size="16" />
@@ -82,7 +85,11 @@ export function CourseCard({
         {href && (
           <Button asChild variant="outline" className="items-center">
             <Link href={href}>
-              {intent == "learn" && "Learn"} {intent == "teach" && "Edit"}{" "}
+              {clsx(
+                intent == "learn" && "Вчитися",
+                intent == "teach" && "Редагувати",
+                intent == "explore" && "Детальніше",
+              )}
               <MoveRight size="16" className="ml-2" />
             </Link>
           </Button>
