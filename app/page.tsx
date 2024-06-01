@@ -1,3 +1,6 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import { H1 } from "@/components/ui/typography";
 import {
   Pagination,
@@ -8,7 +11,12 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import { Filter } from "lucide-react";
+import {
+  DollarSignIcon,
+  FilterIcon,
+  PaletteIcon,
+  SearchIcon,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -19,28 +27,97 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { CourseCard, CourseCardNew } from "@/components/CourseCard";
+import { Input } from "@/components/ui/input";
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+} from "@/components/ui/popover";
+import { createPortal } from "react-dom";
+import Link from "next/link";
 
 export default function Home() {
+  const [navLinksPortal, setNavLinksPortal] = useState<HTMLElement | null>(
+    null,
+  );
+
+  useEffect(() => {
+    setNavLinksPortal(document.getElementById("navLinksPortal"));
+  }, []);
   return (
     <main className="flex min-h-full max-w-7xl grow flex-col gap-8 p-12 md:overflow-y-auto md:p-24">
-      <div className="flex flex-col justify-between gap-2 sm:flex-row">
-        <H1>My courses</H1>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="w-fit">
-              <Filter className="mr-2 size-4" /> Complete
+      {navLinksPortal
+        ? createPortal(
+            <>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="w-fit self-end"
+                asChild
+              >
+                <Link href="/explore">Пошук курсів</Link>
+              </Button>
+            </>,
+            navLinksPortal,
+          )
+        : null}
+      <div className="flex items-center justify-between gap-2">
+        <H1>Мої курси</H1>
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button variant="outline" size="icon">
+              <FilterIcon className="size-4" />
             </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent className="w-56">
-            <DropdownMenuLabel>Filter</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuCheckboxItem>All</DropdownMenuCheckboxItem>
-            <DropdownMenuCheckboxItem checked>
-              Complete
-            </DropdownMenuCheckboxItem>
-            <DropdownMenuCheckboxItem>Non-complete</DropdownMenuCheckboxItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+          </PopoverTrigger>
+          <PopoverContent>
+            <div className="flex flex-col gap-2">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" size="sm" className="w-fit">
+                    <DollarSignIcon className="mr-2 size-4" /> Будь-яка ціна
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-56">
+                  <DropdownMenuLabel>Ціна</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuCheckboxItem checked>
+                    Будь-яка ціна
+                  </DropdownMenuCheckboxItem>
+                  <DropdownMenuCheckboxItem>
+                    Безкоштовні
+                  </DropdownMenuCheckboxItem>
+                  <DropdownMenuCheckboxItem>Платні</DropdownMenuCheckboxItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" size="sm" className="w-fit">
+                    <PaletteIcon className="mr-2 size-4" /> Будь-який колір
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-56">
+                  <DropdownMenuLabel>Ціна</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuCheckboxItem checked>
+                    Будь-який колір
+                  </DropdownMenuCheckboxItem>
+                  <DropdownMenuCheckboxItem>
+                    Безкоштовні
+                  </DropdownMenuCheckboxItem>
+                  <DropdownMenuCheckboxItem>Платні</DropdownMenuCheckboxItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+              <div className="relative w-full">
+                <SearchIcon className="text-muted-foreground absolute left-2.5 top-3 size-4" />
+                <Input
+                  type="search"
+                  placeholder="Search..."
+                  className="bg-background rounded-lg pl-8"
+                />
+              </div>
+            </div>
+          </PopoverContent>
+        </Popover>
       </div>
 
       <div

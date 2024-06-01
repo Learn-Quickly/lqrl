@@ -10,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useApiCreateCourseDraftHandler } from "@/dist/kubb";
 import { CourseColorBadge } from "@/components/CourseColorBadge";
 import { CourseColor } from "@/constants";
+import { toast } from "sonner";
 
 export default function CourseNew() {
   const queryClient = useQueryClient();
@@ -30,6 +31,9 @@ export default function CourseNew() {
       onSuccess: async () => {
         await queryClient.invalidateQueries({
           queryKey: [{ url: "/api/course/get_created_courses" }],
+        });
+        toast("Курс успішно створено", {
+          description: "Ви можете переглянути його в розділі 'Навчання'",
         });
         router.push("/teach");
       },

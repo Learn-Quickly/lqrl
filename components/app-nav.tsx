@@ -5,6 +5,13 @@ import { usePathname, useRouter } from "next/navigation";
 import { Blocks, GraduationCap, UsersRound, User, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/store/auth";
+import { clsx } from "clsx";
+import {
+  TooltipProvider,
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+} from "@/components/ui/tooltip";
 
 export function Navigation() {
   const pathname = usePathname();
@@ -19,27 +26,39 @@ export function Navigation() {
 
   return (
     <nav className="flex w-full max-w-full flex-col justify-between bg-primary-200 p-2 md:h-dvh md:w-fit md:p-3">
-      <div className="flex flex-col gap-3">
+      <div className="flex w-full flex-col gap-3">
         <div className="flex items-center justify-between gap-3 md:flex-col md:items-start">
           <Link href="/" className="flex items-center gap-2 p-1 md:p-4">
             <div className="rounded-md bg-primary-300 p-1">
               <Blocks size="32" />
             </div>
-            <span className="text-xl font-bold tracking-wider md:text-2xl">
-              LQRL
-            </span>
+            <span className="text-xl font-bold tracking-wider">LQRL</span>
           </Link>
-          <div className="flex h-fit w-fit gap-2 rounded-md bg-primary-300 p-2">
-            <Button asChild variant={teachPath ? "ghost" : "default"}>
+          <div className="flex h-fit w-fit justify-center gap-2 self-center rounded-md bg-primary-300 p-1.5">
+            <Button
+              asChild
+              size="sm"
+              className={!teachPath ? "sm:w-28" : ""}
+              variant={teachPath ? "ghost" : "default"}
+            >
               <Link href="/">
-                {!teachPath && <GraduationCap className="mr-2 size-4" />}
-                Learn
+                <GraduationCap
+                  className={clsx("size-4", !teachPath && "sm:mr-2")}
+                />
+                {!teachPath && <span className="hidden sm:inline">Учень</span>}
               </Link>
             </Button>
-            <Button asChild variant={teachPath ? "default" : "ghost"}>
+            <Button
+              asChild
+              size="sm"
+              className={teachPath ? "sm:w-28" : ""}
+              variant={teachPath ? "default" : "ghost"}
+            >
               <Link href="/teach">
-                {teachPath && <UsersRound className="mr-2 size-4" />}
-                Teach
+                <UsersRound
+                  className={clsx("size-4", teachPath && "sm:mr-2")}
+                />
+                {teachPath && <span className="hidden sm:inline">Вчитель</span>}
               </Link>
             </Button>
           </div>
@@ -63,9 +82,18 @@ export function Navigation() {
               <span className="font-medium">@{username}</span>
             </Link>
           </Button>
-          <Button variant="ghost" size="sm" onClick={handleLogout}>
-            <LogOut size="18" />
-          </Button>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button variant="ghost" size="sm" onClick={handleLogout}>
+                  <LogOut size="18" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Вийти з системи</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </div>
       ) : (
         <div className="hidden items-center gap-0.5 md:flex md:justify-between">
