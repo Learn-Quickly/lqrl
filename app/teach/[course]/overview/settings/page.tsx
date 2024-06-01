@@ -59,7 +59,7 @@ export default function CourseSettings() {
             },
           ],
         });
-        toast("Курс успішно оновлено", {
+        toast.success("Курс успішно оновлено", {
           description: "Зміни були збережені.",
         });
       },
@@ -98,7 +98,7 @@ export default function CourseSettings() {
             },
           ],
         });
-        toast("Курс успішно архівовано", {
+        toast.success("Курс успішно архівовано", {
           description: "Курс більше не доступний для студентів.",
           action: {
             label: "Переглянути",
@@ -122,7 +122,7 @@ export default function CourseSettings() {
             },
           ],
         });
-        toast("Курс успішно опубліковано", {
+        toast.success("Курс успішно опубліковано", {
           description: "Курс став доступним для студентів.",
           action: {
             label: "Переглянути",

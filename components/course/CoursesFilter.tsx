@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { clsx } from "clsx";
 import { Input } from "@/components/ui/input";
-import { CourseColor } from "@/constants";
+import { CourseColor, CourseState } from "@/constants";
 
 type ColorFilter = CourseColor | "any";
 type PriceFilter = "any" | "free" | "paid";
@@ -29,10 +29,12 @@ function makeFilterString({
   color,
   price,
   name,
+  stateEq,
 }: {
   color: ColorFilter;
   price: PriceFilter;
   name: string;
+  stateEq?: string;
 }) {
   const colorFilter = color == "any" ? {} : { color: { $eq: color } };
   const priceFilter =
@@ -42,7 +44,7 @@ function makeFilterString({
         ? { price: { $eq: 0 } }
         : { price: { $gt: 0 } };
   const nameFilter = name ? { title: { $contains: name } } : {};
-  const stateFilter = { state: { $eq: "Published" } };
+  const stateFilter = stateEq ? { state: { $eq: "Published" } } : {};
 
   const filters = [
     { ...colorFilter, ...priceFilter, ...nameFilter, ...stateFilter },
@@ -53,8 +55,10 @@ function makeFilterString({
 
 export function CoursesFilter({
   setFilter,
+  stateEq,
 }: {
   setFilter: (filter: string) => void;
+  stateEq?: CourseState;
 }) {
   const [colorFilter, setColorFilter] = useState<ColorFilter>("any");
   const [priceFilter, setPriceFilter] = useState<PriceFilter>("any");
@@ -66,9 +70,10 @@ export function CoursesFilter({
         color: colorFilter,
         price: priceFilter,
         name: nameFilter,
+        stateEq,
       }),
     );
-  }, [setFilter, colorFilter, priceFilter, nameFilter]);
+  }, [setFilter, colorFilter, priceFilter, nameFilter, stateEq]);
 
   return (
     <Popover>

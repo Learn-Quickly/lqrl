@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { Button } from "@/components/ui/button";
 import { useParams } from "next/navigation";
-import { useApiGetCourseHandler } from "@/dist/kubb";
+import { useApiGetAttendants, useApiGetCourseHandler } from "@/dist/kubb";
 import { Footer } from "@/components/Footer";
 import { CourseHeader } from "@/components/course/CourseHeader";
 import { CourseColor } from "@/constants";
@@ -26,6 +26,8 @@ export default function CourseOverviewLayout({
   }, []);
 
   const course = useApiGetCourseHandler(parseInt(courseId));
+
+  const attendants = useApiGetAttendants({ course_id: parseInt(courseId) });
 
   return (
     <div className="flex min-h-full flex-col">
@@ -69,6 +71,7 @@ export default function CourseOverviewLayout({
           color={course.data.color as CourseColor}
           price={course.data.price}
           state={course.data.state}
+          attendants={attendants.data?.length}
         />
       ) : (
         <Skeleton className="h-[19.125rem] w-full" />

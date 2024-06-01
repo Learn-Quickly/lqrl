@@ -13,12 +13,14 @@ import { Button } from "@/components/ui/button";
 import { useApiRegisterForCourseHandler } from "@/dist/kubb";
 import { toast } from "sonner";
 import { useParams, useRouter } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
 
 export function CourseHeader({
   title,
   description,
   color,
   price,
+  attendants,
   state,
   joinable = false,
 }: {
@@ -26,18 +28,25 @@ export function CourseHeader({
   description: string;
   color: CourseColor;
   price: number;
+  attendants?: number;
   state?: CourseState;
   joinable?: boolean;
 }) {
   const { course: courseId } = useParams<{ course: string }>();
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   const registerForCourse = useApiRegisterForCourseHandler({
     mutation: {
       onSuccess: async () => {
-        // TODO: invalidate joined courses query
-        toast("Ви успішно приєднались до курсу");
+        await queryClient.invalidateQueries({
+          queryKey: [{ url: "/api/course/get_user_courses_registered/" }],
+        });
+        toast.success("Ви успішно приєднались до курсу");
         router.push(`/learn/${courseId}/`);
+      },
+      onError: () => {
+        toast.error("Виникла помилка при реєстрації на курс");
       },
     },
   });
@@ -46,7 +55,6 @@ export function CourseHeader({
     registerForCourse.mutate({ data: { course_id: parseInt(courseId) } });
   }
 
-  // TODO: if list of my courses contains this course, show "Ви вже приєднались"
   return (
     <header
       className={clsx(
@@ -70,10 +78,12 @@ export function CourseHeader({
           <DollarSignIcon className="h-4 w-4" />
           <span>{price > 0 ? price : "безкоштовно"}</span>
         </div>
-        <div className="inline-flex items-center gap-2 rounded-md border border-primary-300 bg-primary-50 px-3 py-1 text-sm font-medium">
-          <UserIcon className="h-4 w-4" />
-          <span>100 студентів</span>
-        </div>
+        {attendants != undefined && (
+          <div className="inline-flex items-center gap-2 rounded-md border border-primary-300 bg-primary-50 px-3 py-1 text-sm font-medium">
+            <UserIcon className="h-4 w-4" />
+            <span>{attendants}</span>
+          </div>
+        )}
         {state && (
           <div className="inline-flex items-center gap-2 rounded-md border border-primary-300 bg-primary-50 px-3 py-1 text-sm font-medium">
             <BookCheck className="h-4 w-4" />

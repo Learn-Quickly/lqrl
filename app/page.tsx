@@ -8,7 +8,7 @@ import { CourseCard, CourseCardNotFound } from "@/components/CourseCard";
 import { createPortal } from "react-dom";
 import Link from "next/link";
 import { CoursesFilter } from "@/components/course/CoursesFilter";
-import { useApiGetCoursesHandler } from "@/dist/kubb";
+import { useApiGetUserCoursesRegisteredHandler } from "@/dist/kubb";
 import { CourseColor, paginationLimit } from "@/constants";
 import { useSearchParams } from "next/navigation";
 
@@ -26,7 +26,7 @@ export default function Home() {
 
   const [courseFilter, setCourseFilter] = useState<string | undefined>();
 
-  const courses = useApiGetCoursesHandler({
+  const courses = useApiGetUserCoursesRegisteredHandler({
     filters: courseFilter,
     list_options: `{"limit": ${paginationLimit}, "offset": ${(page - 1) * paginationLimit}}`,
   });
@@ -49,7 +49,7 @@ export default function Home() {
         : null}
       <div className="flex items-center justify-between gap-2">
         <H1>Мої курси</H1>
-        <CoursesFilter setFilter={setCourseFilter} />
+        <CoursesFilter setFilter={setCourseFilter} stateEq="Published" />
       </div>
 
       <div

@@ -32,7 +32,7 @@ export default function CourseNew() {
         await queryClient.invalidateQueries({
           queryKey: [{ url: "/api/course/get_created_courses" }],
         });
-        toast("Курс успішно створено", {
+        toast.success("Курс успішно створено", {
           description: "Ви можете переглянути його в розділі 'Навчання'",
         });
         router.push("/teach");

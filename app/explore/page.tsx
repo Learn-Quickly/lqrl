@@ -23,7 +23,7 @@ export default function SearchCourses() {
     <main className="flex min-h-full max-w-7xl grow flex-col gap-8 p-12 md:overflow-y-auto md:p-24">
       <div className="flex items-center justify-between gap-2">
         <H1>Пошук курсів</H1>
-        <CoursesFilter setFilter={setCourseFilter} />
+        <CoursesFilter setFilter={setCourseFilter} stateEq="Published" />
       </div>
 
       <div
