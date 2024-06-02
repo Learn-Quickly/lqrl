@@ -8,6 +8,7 @@ export function Footer() {
         <Link
           className="text-xs underline-offset-4 hover:underline"
           href="https://github.com/Learn-Quickly"
+          target="_blank"
         >
           GitHub
         </Link>

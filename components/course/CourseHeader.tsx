@@ -3,14 +3,17 @@
 import { clsx } from "clsx";
 import {
   BookCheck,
-  CalendarDaysIcon,
+  ClipboardList,
   DollarSignIcon,
   UserIcon,
 } from "lucide-react";
 import { translateCourseState } from "@/lib/utils";
 import { CourseColor, CourseState } from "@/constants";
 import { Button } from "@/components/ui/button";
-import { useApiRegisterForCourseHandler } from "@/dist/kubb";
+import {
+  useApiGetLessonsHandler,
+  useApiRegisterForCourseHandler,
+} from "@/dist/kubb";
 import { toast } from "sonner";
 import { useParams, useRouter } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
@@ -35,6 +38,7 @@ export function CourseHeader({
   const { course: courseId } = useParams<{ course: string }>();
   const router = useRouter();
   const queryClient = useQueryClient();
+  const lessons = useApiGetLessonsHandler(parseInt(courseId));
 
   const registerForCourse = useApiRegisterForCourseHandler({
     mutation: {
@@ -69,11 +73,13 @@ export function CourseHeader({
         {title}
       </h1>
       <p className="mt-4 text-gray-500 md:text-xl">{description}</p>
-      <div className="mt-6 flex flex-wrap items-center gap-3">
-        <div className="inline-flex items-center gap-2 rounded-md border border-primary-300 bg-primary-50 px-3 py-1 text-sm font-medium">
-          <CalendarDaysIcon className="h-4 w-4" />
-          <span>12 уроків</span>
-        </div>
+      <div className="mt-6 flex flex-wrap items-center gap-2">
+        {lessons.data && (
+          <div className="inline-flex items-center gap-2 rounded-md border border-primary-300 bg-primary-50 px-3 py-1 text-sm font-medium">
+            <ClipboardList className="h-4 w-4" />
+            <span>Уроків: {lessons.data.length}</span>
+          </div>
+        )}
         <div className="inline-flex items-center gap-2 rounded-md border border-primary-300 bg-primary-50 px-3 py-1 text-sm font-medium">
           <DollarSignIcon className="h-4 w-4" />
           <span>{price > 0 ? price : "безкоштовно"}</span>

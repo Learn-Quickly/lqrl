@@ -1,5 +1,6 @@
 import {
   Card,
+  CardContent,
   CardDescription,
   CardFooter,
   CardHeader,
@@ -8,52 +9,61 @@ import {
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { ArrowUp, ArrowDown } from "lucide-react";
-import { useApiLessonChangeOrderHandler } from "@/dist/kubb";
+import { useApiExerciseChangeOrderHandler } from "@/dist/kubb";
 import { useQueryClient } from "@tanstack/react-query";
+import { ExerciseDifficulty } from "@/constants";
+import { secondsToTime, translateExerciseDifficulty } from "@/lib/utils";
 
-export function CourseLesson({
-  courseId,
+export function LessonExercise({
   lessonId,
-  lessonOrder,
+  exerciseId,
+  exerciseOrder,
   title,
+  description,
+  timeToComplete,
+  difficulty,
   intent,
   href,
   isLast,
 }: {
-  courseId: number;
   lessonId: number;
-  lessonOrder: number;
+  exerciseId: number;
+  exerciseOrder: number;
   title: string;
+  description: string;
+  timeToComplete: number;
+  difficulty: ExerciseDifficulty;
   intent: "learn" | "edit" | "explore";
   href?: string;
   isLast?: boolean;
 }) {
   const queryClient = useQueryClient();
 
-  const changeOrder = useApiLessonChangeOrderHandler({
+  const changeOrder = useApiExerciseChangeOrderHandler({
     mutation: {
       onSuccess: async () => {
-        await queryClient.invalidateQueries({
-          queryKey: [
-            {
-              params: { courseId: courseId },
-              url: "/api/course/lesson/get_lessons/:course_id",
-            },
-          ],
-        });
+        //TODO: invalidate exercises query
+        // await queryClient.invalidateQueries({
+        //   queryKey: [
+        //     {
+        //       params: { courseId: courseId },
+        //       url: "/api/course/lesson/get_lessons/:course_id",
+        //     },
+        //   ],
+        // });
       },
     },
   });
 
   async function handleMoveUp() {
     changeOrder.mutate({
-      data: { lesson_id: lessonId, order: lessonOrder - 1 },
+      data: { exercise_id: exerciseId, order: exerciseOrder - 1 },
     });
   }
 
   async function handleMoveDown() {
     changeOrder.mutate({
-      data: { lesson_id: lessonId, order: lessonOrder + 1 },
+      data: { exercise_id: exerciseId, order: exerciseOrder + 1 },
     });
   }
 
@@ -61,8 +71,26 @@ export function CourseLesson({
     <Card>
       <CardHeader>
         <CardTitle>{title}</CardTitle>
-        <CardDescription>Description</CardDescription>
+        <CardDescription>{description}</CardDescription>
       </CardHeader>
+      <CardContent>
+        <div className="grid grid-cols-2 gap-6">
+          <div className="space-y-1">
+            <p className="text-sm font-medium text-gray-500">
+              Time to complete
+            </p>
+            <p className="text-base font-medium">
+              {secondsToTime(timeToComplete)}
+            </p>
+          </div>
+          <div className="space-y-1">
+            <p className="text-sm font-medium text-gray-500">Difficulty</p>
+            <p className="text-base font-medium">
+              {translateExerciseDifficulty(difficulty)}
+            </p>
+          </div>
+        </div>
+      </CardContent>
       {(intent == "learn" || intent == "edit") && (
         <CardFooter className="flex gap-2">
           <Button variant="outline" asChild>
@@ -75,7 +103,7 @@ export function CourseLesson({
               <Button
                 size="icon"
                 variant="ghost"
-                disabled={lessonOrder == 1}
+                disabled={exerciseOrder == 1}
                 onClick={handleMoveUp}
               >
                 <ArrowUp className="size-4" />

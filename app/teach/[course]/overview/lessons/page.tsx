@@ -32,6 +32,7 @@ export default function Lessons() {
                 title={lesson.title}
                 intent="edit"
                 isLast={lesson.lesson_order === lessons.data.length}
+                href={`/teach/${courseId}/lesson/${lesson.id}`}
               />
             ))}
         </div>
