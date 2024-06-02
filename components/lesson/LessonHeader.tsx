@@ -3,15 +3,18 @@
 import { clsx } from "clsx";
 import { ClipboardList } from "lucide-react";
 import { EditLessonButton } from "@/components/lesson/EditLessonButton";
+import { StartLessonButton } from "@/components/lesson/StartLessonButton";
 
 export function LessonHeader({
   title,
   description,
   editable = false,
+  startable = false,
 }: {
   title: string;
   description: string;
   editable?: boolean;
+  startable?: boolean;
 }) {
   return (
     <header className={clsx("w-full bg-stone-100 px-4 py-12 md:px-6 md:py-20")}>
@@ -27,6 +30,7 @@ export function LessonHeader({
         {editable && (
           <EditLessonButton title={title} description={description} />
         )}
+        {startable && <StartLessonButton />}
       </div>
     </header>
   );

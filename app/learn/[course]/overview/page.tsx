@@ -116,7 +116,7 @@ export default function LearnCourseLessons() {
                 currentLessonId: lesson.id,
                 currentLessonOrder: lesson.lesson_order,
               });
-              console.log(state, lesson.id, lesson.lesson_order);
+
               return (
                 <CourseLesson
                   key={lesson.id}

@@ -62,9 +62,8 @@ export function EditLessonButton({
   });
 
   function handleUpdateLesson() {
-    //TODO: update description when API is ready
     updateLesson.mutate({
-      data: { title, lesson_id: parseInt(lessonId) },
+      data: { title, description, lesson_id: parseInt(lessonId) },
     });
   }
 
