@@ -17,6 +17,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useApiCreateLessonHandler } from "@/dist/kubb";
 import { useParams } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 
 export function CreateLessonButton() {
   const { course: courseId } = useParams<{ course: string }>();
@@ -35,6 +36,9 @@ export function CreateLessonButton() {
             },
           ],
         });
+        setTitle("");
+        setDescription("");
+        toast.success("Урок успішно створено");
       },
     },
   });
