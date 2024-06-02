@@ -37,6 +37,7 @@ export default function Lessons() {
                 description={lesson.description}
                 intent="edit"
                 isLast={lesson.lesson_order === lessons.data.length}
+                btnLabel="Редагувати"
                 href={`/teach/${courseId}/lesson/${lesson.id}`}
               />
             ))}

@@ -71,7 +71,7 @@ export default function CourseOverviewLayout({
           color={course.data.color as CourseColor}
           price={course.data.price}
           state={course.data.state}
-          attendants={attendants.data?.length}
+          attendants={attendants.data?.users.length}
         />
       ) : (
         <Skeleton className="h-[19.125rem] w-full" />

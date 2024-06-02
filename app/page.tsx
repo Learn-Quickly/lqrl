@@ -64,7 +64,7 @@ export default function Home() {
             color={course.color as CourseColor}
             price={course.price}
             intent="learn"
-            href={`/learn/${course.id}`}
+            href={`/learn/${course.id}/overview`}
           />
         ))}
         {courses.data?.courses.length == 0 && <CourseCardNotFound />}

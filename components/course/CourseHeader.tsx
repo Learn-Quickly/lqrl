@@ -47,7 +47,7 @@ export function CourseHeader({
           queryKey: [{ url: "/api/course/get_user_courses_registered/" }],
         });
         toast.success("Ви успішно приєднались до курсу");
-        router.push(`/learn/${courseId}/`);
+        router.push(`/learn/${courseId}/overview`);
       },
       onError: () => {
         toast.error("Виникла помилка при реєстрації на курс");

@@ -18,6 +18,7 @@ export function CourseLesson({
   title,
   description,
   intent,
+  btnLabel,
   href,
   isLast,
 }: {
@@ -27,6 +28,7 @@ export function CourseLesson({
   title: string;
   description: string;
   intent: "learn" | "edit" | "explore";
+  btnLabel?: string;
   href?: string;
   isLast?: boolean;
 }) {
@@ -68,9 +70,7 @@ export function CourseLesson({
       {(intent == "learn" || intent == "edit") && (
         <CardFooter className="flex gap-2">
           <Button variant="outline" asChild>
-            <Link href={href || "#"}>
-              {intent == "edit" ? "Редагувати" : "Переглянути"}
-            </Link>
+            <Link href={href || "#"}>{btnLabel || "Перейти"}</Link>
           </Button>
           {intent == "edit" && (
             <>
