@@ -54,19 +54,29 @@ function getCurrentLessonState({
     return currentLesson.state as LessonProgressServerState;
   }
 
-  // Find the last done lesson
-  const lastDoneLesson = serverStates
-    .filter((lesson) => lesson.state === "Done")
-    .reduce((prev, curr) => (curr.order > prev.order ? curr : prev), {
-      order: -1,
-    });
+  // Sort server states by order
+  const sortedServerStates = serverStates.sort((a, b) => a.order - b.order);
 
-  // Determine the state of the current lesson
-  if (lastDoneLesson.order === -1) {
-    // If there are no done lessons, the current lesson is NotStarted
-    return "NotStarted";
-  } else {
-    // If there are done lessons, find the next lesson after the last done
+  // Find the last done lesson and the first in-progress lesson
+  const lastDoneLesson = sortedServerStates
+    .filter((lesson) => lesson.state === "Done")
+    .pop();
+  const firstInProgressLesson = sortedServerStates.find(
+    (lesson) => lesson.state === "InProgress",
+  );
+
+  // If there is an InProgress lesson, then there can't be a NotStarted lesson
+  if (firstInProgressLesson) {
+    return "Unavailable";
+  }
+
+  // If there are no progresses on the server
+  if (serverStates.length === 0) {
+    return currentLessonOrder === 1 ? "NotStarted" : "Unavailable";
+  }
+
+  // If there are only Done lessons
+  if (lastDoneLesson) {
     if (currentLessonOrder === lastDoneLesson.order + 1) {
       return "NotStarted";
     } else if (currentLessonOrder > lastDoneLesson.order + 1) {
@@ -74,8 +84,8 @@ function getCurrentLessonState({
     }
   }
 
-  // If no specific conditions matched, default to NotStarted
-  return "NotStarted";
+  // If no specific conditions matched, default to Unavailable
+  return "Unavailable";
 }
 
 export default function LearnCourseLessons() {
