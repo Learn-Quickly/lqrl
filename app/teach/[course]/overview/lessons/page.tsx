@@ -30,6 +30,7 @@ export default function Lessons() {
                 lessonId={lesson.id}
                 lessonOrder={lesson.lesson_order}
                 title={lesson.title}
+                description={lesson.description}
                 intent="edit"
                 isLast={lesson.lesson_order === lessons.data.length}
                 href={`/teach/${courseId}/lesson/${lesson.id}`}

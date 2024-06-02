@@ -35,3 +35,29 @@ export const secondsToTime = (seconds: number) => {
   const remainingSeconds = seconds % 60;
   return `${minutes}:${remainingSeconds < 10 ? "0" : ""}${remainingSeconds}`;
 };
+
+export const timestampToDateString = (timestamp: number) => {
+  // Convert the timestamp to milliseconds (JavaScript timestamps are in milliseconds)
+  const date = new Date(timestamp * 1000);
+
+  return date.toLocaleDateString("uk-UA", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    weekday: "long",
+  });
+};
+
+export function getCompletedPercentage({
+  completedLessons,
+  totalLessons,
+}: {
+  completedLessons: number;
+  totalLessons: number;
+}) {
+  if (totalLessons == 0) {
+    return 0;
+  }
+  const percentage = (completedLessons / totalLessons) * 100;
+  return Math.round(percentage);
+}

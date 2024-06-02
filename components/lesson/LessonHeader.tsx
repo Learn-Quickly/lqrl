@@ -1,9 +1,8 @@
 "use client";
 
 import { clsx } from "clsx";
-import { ClipboardList, Pencil } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { useParams } from "next/navigation";
+import { ClipboardList } from "lucide-react";
+import { EditLessonButton } from "@/components/lesson/EditLessonButton";
 
 export function LessonHeader({
   title,
@@ -14,8 +13,6 @@ export function LessonHeader({
   description: string;
   editable?: boolean;
 }) {
-  const { lesson: lessonId } = useParams<{ lesson: string }>();
-
   return (
     <header className={clsx("w-full bg-stone-100 px-4 py-12 md:px-6 md:py-20")}>
       <h1 className="text-2xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
@@ -28,9 +25,7 @@ export function LessonHeader({
           <span>12 завдань</span>
         </div>
         {editable && (
-          <Button variant="outline" size="icon">
-            <Pencil className="size-4" />
-          </Button>
+          <EditLessonButton title={title} description={description} />
         )}
       </div>
     </header>

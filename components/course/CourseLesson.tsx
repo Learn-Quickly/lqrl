@@ -16,6 +16,7 @@ export function CourseLesson({
   lessonId,
   lessonOrder,
   title,
+  description,
   intent,
   href,
   isLast,
@@ -24,6 +25,7 @@ export function CourseLesson({
   lessonId: number;
   lessonOrder: number;
   title: string;
+  description: string;
   intent: "learn" | "edit" | "explore";
   href?: string;
   isLast?: boolean;
@@ -61,7 +63,7 @@ export function CourseLesson({
     <Card>
       <CardHeader>
         <CardTitle>{title}</CardTitle>
-        <CardDescription>Description</CardDescription>
+        <CardDescription>{description}</CardDescription>
       </CardHeader>
       {(intent == "learn" || intent == "edit") && (
         <CardFooter className="flex gap-2">

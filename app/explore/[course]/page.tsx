@@ -29,6 +29,7 @@ export default function Lessons() {
                 lessonId={lesson.id}
                 lessonOrder={lesson.lesson_order}
                 title={lesson.title}
+                description={lesson.description}
                 intent="explore"
               />
             ))}
