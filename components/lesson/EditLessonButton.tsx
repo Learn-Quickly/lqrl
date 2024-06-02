@@ -27,7 +27,10 @@ export function EditLessonButton({
   title: string;
   description: string;
 }) {
-  const { lesson: lessonId } = useParams<{ lesson: string }>();
+  const { course: courseId, lesson: lessonId } = useParams<{
+    course: string;
+    lesson: string;
+  }>();
   const [title, setTitle] = useState(initialTitle);
   const [description, setDescription] = useState(initialDescription);
 
@@ -42,6 +45,14 @@ export function EditLessonButton({
               params: {
                 lessonId: parseInt(lessonId),
               },
+            },
+          ],
+        });
+        await queryClient.invalidateQueries({
+          queryKey: [
+            {
+              params: { courseId: parseInt(courseId) },
+              url: "/api/course/lesson/get_lessons/:course_id",
             },
           ],
         });
