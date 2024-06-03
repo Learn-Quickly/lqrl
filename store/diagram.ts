@@ -26,15 +26,45 @@ type DiagramState = {
   displayMode: DisplayMode;
 };
 
+export type DiagramVariant = "answer" | "exercise";
 type RFState = {
-  diagrams: { [key: string]: DiagramState };
-  onNodesChange: (taskId: string, changes: NodeChange[]) => void;
-  onEdgesChange: (taskId: string, changes: EdgeChange[]) => void;
-  onConnect: (taskId: string, connection: Connection) => void;
-  setNodes: (taskId: string, nodes: Node[]) => void;
-  setEdges: (taskId: string, edges: Edge[]) => void;
-  setDisplayMode: (taskId: string, mode: DisplayMode) => void;
-  setHeaderTitle: (taskId: string, id: string, title: string) => void;
+  diagrams: { [key: string]: { answer: DiagramState; exercise: DiagramState } };
+  onNodesChange: (
+    taskId: string,
+    diagramVariant: DiagramVariant,
+    changes: NodeChange[],
+  ) => void;
+  onEdgesChange: (
+    taskId: string,
+    diagramVariant: DiagramVariant,
+    changes: EdgeChange[],
+  ) => void;
+  onConnect: (
+    taskId: string,
+    diagramVariant: DiagramVariant,
+    connection: Connection,
+  ) => void;
+  setNodes: (
+    taskId: string,
+    diagramVariant: DiagramVariant,
+    nodes: Node[],
+  ) => void;
+  setEdges: (
+    taskId: string,
+    diagramVariant: DiagramVariant,
+    edges: Edge[],
+  ) => void;
+  setDisplayMode: (
+    taskId: string,
+    diagramVariant: DiagramVariant,
+    mode: DisplayMode,
+  ) => void;
+  setHeaderTitle: (
+    taskId: string,
+    diagramVariant: DiagramVariant,
+    id: string,
+    title: string,
+  ) => void;
   initializeDiagram: (taskId: string, defaultDisplayMode?: DisplayMode) => void;
 };
 
@@ -42,74 +72,116 @@ export const useDiagramStore = createWithEqualityFn<RFState>(
   (set, get) => ({
     diagrams: {},
 
-    onNodesChange: (taskId: string, changes: NodeChange[]) => {
+    onNodesChange: (
+      taskId: string,
+      diagramVariant: DiagramVariant,
+      changes: NodeChange[],
+    ) => {
       set((state) => {
         const diagram = state.diagrams[taskId];
         if (diagram) {
-          diagram.nodes = applyNodeChanges(changes, diagram.nodes);
+          diagram[diagramVariant].nodes = applyNodeChanges(
+            changes,
+            diagram[diagramVariant].nodes,
+          );
         }
         return { diagrams: { ...state.diagrams, [taskId]: diagram } };
       });
     },
 
-    onEdgesChange: (taskId: string, changes: EdgeChange[]) => {
+    onEdgesChange: (
+      taskId: string,
+      diagramVariant: DiagramVariant,
+      changes: EdgeChange[],
+    ) => {
       set((state) => {
         const diagram = state.diagrams[taskId];
         if (diagram) {
-          diagram.edges = applyEdgeChanges(changes, diagram.edges);
+          diagram[diagramVariant].edges = applyEdgeChanges(
+            changes,
+            diagram[diagramVariant].edges,
+          );
         }
         return { diagrams: { ...state.diagrams, [taskId]: diagram } };
       });
     },
 
-    onConnect: (taskId: string, connection: Connection) => {
+    onConnect: (
+      taskId: string,
+      diagramVariant: DiagramVariant,
+      connection: Connection,
+    ) => {
       set((state) => {
         const diagram = state.diagrams[taskId];
         if (diagram) {
-          diagram.edges = addEdge(connection, diagram.edges);
+          diagram[diagramVariant].edges = addEdge(
+            connection,
+            diagram[diagramVariant].edges,
+          );
         }
         return { diagrams: { ...state.diagrams, [taskId]: diagram } };
       });
     },
 
-    setNodes: (taskId: string, nodes: Node[]) => {
+    setNodes: (
+      taskId: string,
+      diagramVariant: DiagramVariant,
+      nodes: Node[],
+    ) => {
       set((state) => {
         const diagram = state.diagrams[taskId];
         if (diagram) {
-          diagram.nodes = [...diagram.nodes, ...nodes];
+          diagram[diagramVariant].nodes = [
+            ...diagram[diagramVariant].nodes,
+            ...nodes,
+          ];
         }
         return { diagrams: { ...state.diagrams, [taskId]: diagram } };
       });
     },
 
-    setEdges: (taskId: string, edges: Edge[]) => {
+    setEdges: (
+      taskId: string,
+      diagramVariant: DiagramVariant,
+      edges: Edge[],
+    ) => {
       set((state) => {
         const diagram = state.diagrams[taskId];
         if (diagram) {
-          diagram.edges = edges;
+          diagram[diagramVariant].edges = edges;
         }
         return { diagrams: { ...state.diagrams, [taskId]: diagram } };
       });
     },
 
-    setDisplayMode: (taskId: string, mode: DisplayMode) => {
+    setDisplayMode: (
+      taskId: string,
+      diagramVariant: DiagramVariant,
+      mode: DisplayMode,
+    ) => {
       set((state) => {
         const diagram = state.diagrams[taskId];
         if (diagram) {
-          diagram.displayMode = mode;
+          diagram[diagramVariant].displayMode = mode;
         }
         return { diagrams: { ...state.diagrams, [taskId]: diagram } };
       });
     },
 
-    setHeaderTitle: (taskId: string, id: string, title: string) => {
+    setHeaderTitle: (
+      taskId: string,
+      diagramVariant: DiagramVariant,
+      id: string,
+      title: string,
+    ) => {
       set((state) => {
         const diagram = state.diagrams[taskId];
         if (diagram) {
-          diagram.nodes = diagram.nodes.map((node) =>
-            node.id === id && node.type === "Header"
-              ? { ...node, data: { ...node.data, label: title } }
-              : node,
+          diagram[diagramVariant].nodes = diagram[diagramVariant].nodes.map(
+            (node) =>
+              node.id === id && node.type === "Header"
+                ? { ...node, data: { ...node.data, label: title } }
+                : node,
           );
         }
         return { diagrams: { ...state.diagrams, [taskId]: diagram } };
@@ -123,9 +195,16 @@ export const useDiagramStore = createWithEqualityFn<RFState>(
       set((state) => {
         if (!state.diagrams[taskId]) {
           state.diagrams[taskId] = {
-            nodes: initialNodes,
-            edges: initialEdges,
-            displayMode: defaultDisplayMode,
+            answer: {
+              nodes: initialNodes,
+              edges: initialEdges,
+              displayMode: defaultDisplayMode,
+            },
+            exercise: {
+              nodes: initialNodes,
+              edges: initialEdges,
+              displayMode: defaultDisplayMode,
+            },
           };
         }
         return {

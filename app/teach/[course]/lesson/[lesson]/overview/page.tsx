@@ -26,7 +26,7 @@ export default function LessonEditPage() {
             timeToComplete={20}
             difficulty={"Easy"}
             intent="edit"
-            href={`/teach/${course}/lesson/${lesson}/task/0`}
+            href={`/teach/${course}/lesson/${lesson}/task/0/answer`}
           />
         </div>
       </div>

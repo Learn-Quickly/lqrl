@@ -1,20 +1,28 @@
 import { useCallback } from "react";
 import { Handle, Position } from "reactflow";
-import { useDiagramStore } from "@/store/diagram";
-import { useParams } from "next/navigation";
+import { DiagramVariant, useDiagramStore } from "@/store/diagram";
+import { useParams, usePathname } from "next/navigation";
 
 let count = 1;
 export function HeaderNode({ id, data }: { id: string; data: {} }) {
   const { task: taskId } = useParams<{ task: string }>();
-  const { nodes, edges } = useDiagramStore((state) => state.diagrams[taskId]);
+  const pathname = usePathname();
+  const diagramVariant: DiagramVariant = pathname.includes("answer")
+    ? "answer"
+    : "exercise";
+  const { nodes, edges } = useDiagramStore(
+    (state) => state.diagrams[taskId][diagramVariant],
+  );
   const { displayMode } = useDiagramStore((state) => ({
-    displayMode: state.diagrams[taskId]?.displayMode,
+    displayMode: state.diagrams[taskId]?.[diagramVariant].displayMode,
   }));
   const onChange = useCallback(
     (evt: any) => {
-      useDiagramStore.getState().setHeaderTitle(taskId, id, evt.target.value);
+      useDiagramStore
+        .getState()
+        .setHeaderTitle(taskId, diagramVariant, id, evt.target.value);
     },
-    [taskId, id],
+    [taskId, diagramVariant, id],
   );
   const title = nodes.find((n) => n.id === id)?.data.label;
   count++;

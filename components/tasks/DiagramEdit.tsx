@@ -24,13 +24,13 @@ import { HeaderNode } from "@/components/nodes/Header";
 import { useParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { nanoid } from "nanoid";
-import { useDiagramStore } from "@/store/diagram";
+import { DiagramVariant, useDiagramStore } from "@/store/diagram";
 
 const nodeTypes = {
   Header: HeaderNode,
 };
 
-function Diagram() {
+function Diagram({ diagramVariant }: { diagramVariant: DiagramVariant }) {
   const { task: taskId } = useParams<{ task: string }>();
 
   const { diagrams, initializeDiagram } = useDiagramStore((state) => ({
@@ -38,9 +38,9 @@ function Diagram() {
     initializeDiagram: state.initializeDiagram,
   }));
   const { nodes, edges, displayMode } = useDiagramStore((state) => ({
-    nodes: state.diagrams[taskId]?.nodes || [],
-    edges: state.diagrams[taskId]?.edges || [],
-    displayMode: state.diagrams[taskId]?.displayMode || "view",
+    nodes: state.diagrams[taskId]?.[diagramVariant].nodes || [],
+    edges: state.diagrams[taskId]?.[diagramVariant].edges || [],
+    displayMode: state.diagrams[taskId]?.[diagramVariant].displayMode || "view",
   }));
 
   const [isInitialized, setIsInitialized] = useState(false);
@@ -67,9 +67,9 @@ function Diagram() {
         data: { label: `${type} node` },
       };
 
-      useDiagramStore.getState().setNodes(taskId, [newNode]);
+      useDiagramStore.getState().setNodes(taskId, diagramVariant, [newNode]);
     },
-    [taskId, reactFlow],
+    [taskId, diagramVariant, reactFlow],
   );
 
   if (!isInitialized) return <div />;
@@ -84,9 +84,15 @@ function Diagram() {
         nodeTypes={nodeTypes}
         edges={edges}
         proOptions={{ hideAttribution: true }}
-        onNodesChange={(changes) => onNodesChange(taskId, changes)}
-        onEdgesChange={(changes) => onEdgesChange(taskId, changes)}
-        onConnect={(connection) => onConnect(taskId, connection)}
+        onNodesChange={(changes) =>
+          onNodesChange(taskId, diagramVariant, changes)
+        }
+        onEdgesChange={(changes) =>
+          onEdgesChange(taskId, diagramVariant, changes)
+        }
+        onConnect={(connection) =>
+          onConnect(taskId, diagramVariant, connection)
+        }
         className="border-t border-stone-300 bg-stone-50"
         fitView
       >
@@ -99,7 +105,11 @@ function Diagram() {
                   aria-label="Toggle preview"
                   pressed={displayMode === "view"}
                   onPressedChange={(pressed) =>
-                    setDisplayMode(taskId, pressed ? "view" : "edit")
+                    setDisplayMode(
+                      taskId,
+                      diagramVariant,
+                      pressed ? "view" : "edit",
+                    )
                   }
                 >
                   <Eye className="h-4 w-4" />
@@ -131,10 +141,14 @@ function Diagram() {
   );
 }
 
-export function DiagramEdit() {
+export function DiagramEdit({
+  diagramVariant,
+}: {
+  diagramVariant: DiagramVariant;
+}) {
   return (
     <ReactFlowProvider>
-      <Diagram />
+      <Diagram diagramVariant={diagramVariant} />
     </ReactFlowProvider>
   );
 }

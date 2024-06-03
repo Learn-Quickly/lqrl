@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { ArrowLeft, BookOpenText, NotebookPen, Settings } from "lucide-react";
@@ -28,6 +28,7 @@ import {
 import { ExerciseDifficulty } from "@/constants";
 import { translateExerciseDifficulty } from "@/lib/utils";
 import { clsx } from "clsx";
+import { DiagramVariant } from "@/store/diagram";
 
 export default function EditTaskLayout({
   children,
@@ -67,9 +68,10 @@ export default function EditTaskLayout({
     }
   };
 
-  const [openedDiagram, setOpenedDiagram] = useState<"answer" | "exercise">(
-    "answer",
-  );
+  const pathname = usePathname();
+  const openedDiagram: DiagramVariant = pathname.includes("answer")
+    ? "answer"
+    : "exercise";
 
   return (
     <div className="flex h-[calc(100dvh-4.5rem)] w-full flex-col md:h-dvh">
@@ -88,33 +90,41 @@ export default function EditTaskLayout({
               size="sm"
               className={openedDiagram == "answer" ? "sm:w-28" : ""}
               variant={openedDiagram == "exercise" ? "ghost" : "default"}
-              onClick={() => setOpenedDiagram("answer")}
+              asChild
             >
-              <BookOpenText
-                className={clsx(
-                  "size-4",
-                  openedDiagram == "answer" && "sm:mr-2",
+              <Link
+                href={`/teach/${courseId}/lesson/${lessonId}/task/${taskId}/answer`}
+              >
+                <BookOpenText
+                  className={clsx(
+                    "size-4",
+                    openedDiagram == "answer" && "sm:mr-2",
+                  )}
+                />
+                {openedDiagram == "answer" && (
+                  <span className="hidden sm:inline">Відповідь</span>
                 )}
-              />
-              {openedDiagram == "answer" && (
-                <span className="hidden sm:inline">Відповідь</span>
-              )}
+              </Link>
             </Button>
             <Button
               size="sm"
               className={openedDiagram == "exercise" ? "sm:w-28" : ""}
               variant={openedDiagram == "exercise" ? "default" : "ghost"}
-              onClick={() => setOpenedDiagram("exercise")}
+              asChild
             >
-              <NotebookPen
-                className={clsx(
-                  "size-4",
-                  openedDiagram == "exercise" && "sm:mr-2",
+              <Link
+                href={`/teach/${courseId}/lesson/${lessonId}/task/${taskId}/exercise`}
+              >
+                <NotebookPen
+                  className={clsx(
+                    "size-4",
+                    openedDiagram == "exercise" && "sm:mr-2",
+                  )}
+                />
+                {openedDiagram == "exercise" && (
+                  <span className="hidden sm:inline">Завдання</span>
                 )}
-              />
-              {openedDiagram == "exercise" && (
-                <span className="hidden sm:inline">Завдання</span>
-              )}
+              </Link>
             </Button>
           </div>
         )}
