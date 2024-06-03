@@ -20,7 +20,7 @@ import { UploadIcon } from "lucide-react";
 import { toast } from "sonner";
 
 const isAllowedExtension = (file: any) => {
-  const allowedExtensions = [".pdf"];
+  const allowedExtensions = [".png"];
   const ext = "." + file.name.split(".").pop().toLowerCase();
   return allowedExtensions.includes(ext);
 };
@@ -83,6 +83,7 @@ export default function CourseSettings() {
             },
           ],
         });
+        toast.success("Зображення курсу успішно змінено");
       },
     },
   });

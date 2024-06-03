@@ -24,6 +24,7 @@ export default function CourseOverviewLayout({
           description={course.data.description}
           color={course.data.color as CourseColor}
           price={course.data.price}
+          imgSrc={course.data.img_url || undefined}
           joinable
         />
       ) : (

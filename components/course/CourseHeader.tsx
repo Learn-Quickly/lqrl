@@ -17,6 +17,7 @@ import {
 import { toast } from "sonner";
 import { useParams, useRouter } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
+import { AXIOS_BASE } from "@/client";
 
 export function CourseHeader({
   title,
@@ -26,6 +27,7 @@ export function CourseHeader({
   attendants,
   state,
   joinable = false,
+  imgSrc,
 }: {
   title: string;
   description: string;
@@ -34,6 +36,7 @@ export function CourseHeader({
   attendants?: number;
   state?: CourseState;
   joinable?: boolean;
+  imgSrc?: string;
 }) {
   const { course: courseId } = useParams<{ course: string }>();
   const router = useRouter();
@@ -62,46 +65,61 @@ export function CourseHeader({
   return (
     <header
       className={clsx(
-        "w-full bg-gradient-to-b from-50% to-stone-100 px-4 py-12 md:px-6 md:py-20",
+        "flex w-full flex-col bg-gradient-to-b from-50% to-stone-100 px-4 py-12 md:flex-row md:items-center md:px-6 md:py-20",
         color == "red" && "from-red-100",
         color == "yellow" && "from-yellow-100",
         color == "blue" && "from-blue-100",
         color == "green" && "from-green-100",
       )}
     >
-      <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
-        {title}
-      </h1>
-      <p className="mt-4 text-gray-500 md:text-xl">{description}</p>
-      <div className="mt-6 flex flex-wrap items-center gap-2">
-        {lessons.data && (
+      <div>
+        <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
+          {title}
+        </h1>
+        <p className="mt-4 text-gray-500 md:text-xl">{description}</p>
+        <div className="mt-6 flex flex-wrap items-center gap-2">
+          {lessons.data && (
+            <div className="inline-flex items-center gap-2 rounded-md border border-primary-300 bg-primary-50 px-3 py-1 text-sm font-medium">
+              <ClipboardList className="h-4 w-4" />
+              <span>Уроків: {lessons.data.length}</span>
+            </div>
+          )}
           <div className="inline-flex items-center gap-2 rounded-md border border-primary-300 bg-primary-50 px-3 py-1 text-sm font-medium">
-            <ClipboardList className="h-4 w-4" />
-            <span>Уроків: {lessons.data.length}</span>
+            <DollarSignIcon className="h-4 w-4" />
+            <span>{price > 0 ? price : "безкоштовно"}</span>
           </div>
-        )}
-        <div className="inline-flex items-center gap-2 rounded-md border border-primary-300 bg-primary-50 px-3 py-1 text-sm font-medium">
-          <DollarSignIcon className="h-4 w-4" />
-          <span>{price > 0 ? price : "безкоштовно"}</span>
+          {attendants != undefined && (
+            <div className="inline-flex items-center gap-2 rounded-md border border-primary-300 bg-primary-50 px-3 py-1 text-sm font-medium">
+              <UserIcon className="h-4 w-4" />
+              <span>{attendants}</span>
+            </div>
+          )}
+          {state && (
+            <div className="inline-flex items-center gap-2 rounded-md border border-primary-300 bg-primary-50 px-3 py-1 text-sm font-medium">
+              <BookCheck className="h-4 w-4" />
+              <span>{translateCourseState(state || "Draft")}</span>
+            </div>
+          )}
+          {joinable && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleRegisterForCourse}
+            >
+              Приєднатися
+            </Button>
+          )}
         </div>
-        {attendants != undefined && (
-          <div className="inline-flex items-center gap-2 rounded-md border border-primary-300 bg-primary-50 px-3 py-1 text-sm font-medium">
-            <UserIcon className="h-4 w-4" />
-            <span>{attendants}</span>
-          </div>
-        )}
-        {state && (
-          <div className="inline-flex items-center gap-2 rounded-md border border-primary-300 bg-primary-50 px-3 py-1 text-sm font-medium">
-            <BookCheck className="h-4 w-4" />
-            <span>{translateCourseState(state || "Draft")}</span>
-          </div>
-        )}
-        {joinable && (
-          <Button variant="outline" size="sm" onClick={handleRegisterForCourse}>
-            Приєднатися
-          </Button>
-        )}
       </div>
+      {imgSrc && (
+        <div className="w-full md:w-1/2">
+          <img
+            src={imgSrc ? AXIOS_BASE + "/" + imgSrc : undefined}
+            alt={title}
+            className="max-h-96"
+          />
+        </div>
+      )}
     </header>
   );
 }

@@ -54,6 +54,9 @@ export function useApiSetCourseImgHandler(
         url: `/api/course/set_course_img/${courseId}`,
         data,
         ...clientOptions,
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       });
       return res.data;
     },

@@ -5,7 +5,7 @@ import axios from "axios";
 import type { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
 import { authStoreKey } from "@/constants";
 
-const AXIOS_BASE = "http://localhost:8080";
+export const AXIOS_BASE = "http://localhost:8080";
 
 const accessToken =
   typeof window !== "undefined"

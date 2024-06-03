@@ -72,6 +72,7 @@ export default function CourseOverviewLayout({
           price={course.data.price}
           state={course.data.state}
           attendants={attendants.data?.users.length}
+          imgSrc={course.data.img_url || undefined}
         />
       ) : (
         <Skeleton className="h-[19.125rem] w-full" />
