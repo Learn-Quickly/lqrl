@@ -1,8 +1,10 @@
 "use client";
 
 import { LessonExercise } from "@/components/lesson/LessonExercise";
+import { useParams } from "next/navigation";
 
 export default function LessonEditPage() {
+  const { course, lesson } = useParams<{ course: string; lesson: string }>();
   return (
     <section className="w-full border-t py-12">
       <div className="grid gap-12 px-4 md:px-6">
@@ -24,7 +26,7 @@ export default function LessonEditPage() {
             timeToComplete={20}
             difficulty={"Easy"}
             intent="edit"
-            href={`#`}
+            href={`/teach/${course}/lesson/${lesson}/task/0`}
           />
         </div>
       </div>

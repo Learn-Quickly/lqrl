@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback } from "react";
 import ReactFlow, {
   ReactFlowProvider,
   Background,
@@ -37,6 +37,11 @@ function Diagram() {
     diagrams: state.diagrams,
     initializeDiagram: state.initializeDiagram,
   }));
+  const { nodes, edges, displayMode } = useDiagramStore((state) => ({
+    nodes: state.diagrams[taskId]?.nodes || [],
+    edges: state.diagrams[taskId]?.edges || [],
+    displayMode: state.diagrams[taskId]?.displayMode || "view",
+  }));
 
   const [isInitialized, setIsInitialized] = useState(false);
 
@@ -67,15 +72,7 @@ function Diagram() {
     [taskId, reactFlow],
   );
 
-  const memoizedNodeTypes = useMemo(() => nodeTypes, [nodeTypes]);
-
   if (!isInitialized) return <div />;
-
-  const {
-    nodes = [],
-    edges = [],
-    displayMode = "view",
-  } = diagrams[taskId] || {};
 
   const { onNodesChange, onEdgesChange, onConnect, setDisplayMode } =
     useDiagramStore.getState();
@@ -84,7 +81,7 @@ function Diagram() {
     <div className="flex h-full w-full flex-col md:flex-row">
       <ReactFlow
         nodes={nodes}
-        nodeTypes={memoizedNodeTypes}
+        nodeTypes={nodeTypes}
         edges={edges}
         proOptions={{ hideAttribution: true }}
         onNodesChange={(changes) => onNodesChange(taskId, changes)}
