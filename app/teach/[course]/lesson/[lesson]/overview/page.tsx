@@ -2,9 +2,17 @@
 
 import { LessonExercise } from "@/components/lesson/LessonExercise";
 import { useParams } from "next/navigation";
+import { useApiGetLessonExercisesHandler } from "@/dist/kubb";
+import { ExerciseDifficulty } from "@/constants";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export default function LessonEditPage() {
-  const { course, lesson } = useParams<{ course: string; lesson: string }>();
+  const { course: courseId, lesson: lessonId } = useParams<{
+    course: string;
+    lesson: string;
+  }>();
+  const exercises = useApiGetLessonExercisesHandler(parseInt(lessonId));
   return (
     <section className="w-full border-t py-12">
       <div className="grid gap-12 px-4 md:px-6">
@@ -15,19 +23,30 @@ export default function LessonEditPage() {
               Перегляд та управління вправами цього уроку.
             </p>
           </div>
+          <Button variant="outline" asChild>
+            <Link
+              href={`/teach/${courseId}/lesson/${lessonId}/task/new/answer`}
+            >
+              Додати урок
+            </Link>
+          </Button>
         </div>
         <div className="grid gap-6">
-          <LessonExercise
-            lessonId={0}
-            exerciseId={0}
-            exerciseOrder={1}
-            title={"titl"}
-            description={"desk"}
-            timeToComplete={20}
-            difficulty={"Easy"}
-            intent="edit"
-            href={`/teach/${course}/lesson/${lesson}/task/0/answer`}
-          />
+          {exercises.data?.map((exercise) => (
+            <LessonExercise
+              key={exercise.exercise_id}
+              lessonId={parseInt(lessonId)}
+              exerciseId={exercise.exercise_id}
+              exerciseOrder={exercise.exercise_order}
+              title={exercise.title}
+              description={exercise.description}
+              timeToComplete={exercise.time_to_complete || 0}
+              difficulty={exercise.difficult as ExerciseDifficulty}
+              intent="edit"
+              href={`/teach/${courseId}/lesson/${lessonId}/task/${exercise.exercise_id}/answer`}
+              isLast={exercise.exercise_order === exercises.data.length}
+            />
+          ))}
         </div>
       </div>
     </section>

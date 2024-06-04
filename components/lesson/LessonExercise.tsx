@@ -42,15 +42,14 @@ export function LessonExercise({
   const changeOrder = useApiExerciseChangeOrderHandler({
     mutation: {
       onSuccess: async () => {
-        //TODO: invalidate exercises query
-        // await queryClient.invalidateQueries({
-        //   queryKey: [
-        //     {
-        //       params: { courseId: courseId },
-        //       url: "/api/course/lesson/get_lessons/:course_id",
-        //     },
-        //   ],
-        // });
+        await queryClient.invalidateQueries({
+          queryKey: [
+            {
+              url: "/api/course/lesson/exercise/get_lesson_exercises/:lesson_id",
+              params: { lessonId },
+            },
+          ],
+        });
       },
     },
   });
