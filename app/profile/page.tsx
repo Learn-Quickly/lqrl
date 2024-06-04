@@ -8,6 +8,8 @@ import { useAuthStore } from "@/store/auth";
 import { useApiChangePwdHandler, useApiUpdateUserHandler } from "@/dist/kubb";
 import { useRouter } from "next/navigation";
 import { loginReasons } from "@/constants";
+import { Toggle } from "@/components/ui/toggle";
+import { Eye, EyeOff } from "lucide-react";
 
 export default function Profile() {
   const router = useRouter();
@@ -16,6 +18,8 @@ export default function Profile() {
   const [username, setUsername] = useState(storeUsername);
   const [password, setPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
 
   const updateUsername = useApiUpdateUserHandler({
     mutation: {
@@ -81,23 +85,49 @@ export default function Profile() {
           </div>
           <div>
             <Label htmlFor="current-password">Поточний пароль</Label>
-            <Input
-              id="current-password"
-              placeholder="Введіть поточний пароль"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
+            <div className="flex gap-2">
+              <Input
+                id="current-password"
+                placeholder="Введіть поточний пароль"
+                type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+              <Toggle
+                aria-label="Показати поточний пароль"
+                pressed={showPassword}
+                onPressedChange={(p) => setShowPassword(p)}
+              >
+                {showPassword ? (
+                  <EyeOff className="size-4" />
+                ) : (
+                  <Eye className="size-4" />
+                )}
+              </Toggle>
+            </div>
           </div>
           <div>
             <Label htmlFor="new-password">Новий пароль</Label>
-            <Input
-              id="new-password"
-              placeholder="Введіть новий пароль"
-              type="password"
-              value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
-            />
+            <div className="flex gap-2">
+              <Input
+                id="new-password"
+                placeholder="Введіть новий пароль"
+                type={showNewPassword ? "text" : "password"}
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+              />
+              <Toggle
+                aria-label="Показати пароль"
+                pressed={showNewPassword}
+                onPressedChange={(p) => setShowNewPassword(p)}
+              >
+                {showNewPassword ? (
+                  <EyeOff className="size-4" />
+                ) : (
+                  <Eye className="size-4" />
+                )}
+              </Toggle>
+            </div>
           </div>
           <Button
             onClick={handlePasswordUpdate}
