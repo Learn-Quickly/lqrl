@@ -11,9 +11,19 @@ import {
   applyEdgeChanges,
 } from "reactflow";
 
-const initialNodes = [
-  { id: "1", position: { x: 0, y: 0 }, data: { label: "Theme 1" } },
-  { id: "2", position: { x: 0, y: 100 }, data: { label: "Theme 2" } },
+const initialNodes: Node[] = [
+  {
+    id: "1",
+    position: { x: 0, y: 0 },
+    type: "Header",
+    data: { header: "Theme 1" },
+  },
+  {
+    id: "2",
+    position: { x: 0, y: 100 },
+    type: "Header",
+    data: { header: "Theme 2" },
+  },
 ];
 
 const initialEdges = [{ id: "e1-2", source: "1", target: "2" }];
@@ -180,7 +190,7 @@ export const useDiagramStore = createWithEqualityFn<RFState>(
           diagram[diagramVariant].nodes = diagram[diagramVariant].nodes.map(
             (node) =>
               node.id === id && node.type === "Header"
-                ? { ...node, data: { ...node.data, label: title } }
+                ? { ...node, data: { ...node.data, header: title } }
                 : node,
           );
         }

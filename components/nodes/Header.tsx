@@ -3,7 +3,6 @@ import { Handle, Position } from "reactflow";
 import { DiagramVariant, useDiagramStore } from "@/store/diagram";
 import { useParams, usePathname } from "next/navigation";
 
-let count = 1;
 export function HeaderNode({ id, data }: { id: string; data: {} }) {
   const { task: taskId } = useParams<{ task: string }>();
   const pathname = usePathname();
@@ -24,8 +23,7 @@ export function HeaderNode({ id, data }: { id: string; data: {} }) {
     },
     [taskId, diagramVariant, id],
   );
-  const title = nodes.find((n) => n.id === id)?.data.label;
-  count++;
+  const title = nodes.find((n) => n.id === id)?.data.header || "";
 
   if (displayMode === "edit") {
     return (
@@ -33,7 +31,7 @@ export function HeaderNode({ id, data }: { id: string; data: {} }) {
         <Handle type="target" position={Position.Top} />
         <div className="flex flex-col border border-stone-500 bg-stone-50 p-1">
           <label htmlFor="text" className="text-xs">
-            Header {count}
+            Заголовок
           </label>
           <input
             id="text"

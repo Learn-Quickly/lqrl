@@ -28,7 +28,42 @@ import {
 import { ExerciseDifficulty } from "@/constants";
 import { translateExerciseDifficulty } from "@/lib/utils";
 import { clsx } from "clsx";
-import { DiagramVariant } from "@/store/diagram";
+import { DiagramVariant, useDiagramStore } from "@/store/diagram";
+import { useApiCreateExerciseHandler } from "@/hooks/useApiCreateExerciseHandler";
+import { Node, Edge } from "reactflow";
+
+type DiagramRequestBody = {
+  connections: { from: string; to: string }[];
+  nodes: {
+    id: string;
+    x: number;
+    y: number;
+    node_type: string;
+    body: string;
+  }[];
+};
+
+function storeDiagramToRequestDiagram({
+  nodes,
+  edges,
+}: {
+  nodes: Node[];
+  edges: Edge[];
+}): DiagramRequestBody {
+  return {
+    connections: edges.map(({ source, target }) => ({
+      from: source,
+      to: target,
+    })),
+    nodes: nodes.map(({ id, position: { x, y }, type, data }) => ({
+      id,
+      x: Math.round(x),
+      y: Math.round(y),
+      node_type: type || "",
+      body: JSON.stringify(data),
+    })),
+  };
+}
 
 export default function EditTaskLayout({
   children,
@@ -72,6 +107,30 @@ export default function EditTaskLayout({
   const openedDiagram: DiagramVariant = pathname.includes("answer")
     ? "answer"
     : "exercise";
+
+  const createExercise = useApiCreateExerciseHandler();
+
+  const { nodes, edges } = useDiagramStore((state) => ({
+    nodes: state.diagrams[taskId]?.[openedDiagram].nodes || [],
+    edges: state.diagrams[taskId]?.[openedDiagram].edges || [],
+  }));
+
+  function handleCreateExercise() {
+    const valueBody = storeDiagramToRequestDiagram({ nodes, edges });
+    createExercise.mutate({
+      data: {
+        title,
+        description,
+        difficult: difficulty,
+        time_to_complete: parseInt(minutes) * 60 + parseInt(seconds),
+        lesson_id: parseInt(lessonId),
+        exercise_type:
+          difficulty == "Read" ? "Conspect" : "InteractiveConspect",
+        answer_body: valueBody,
+        exercise_body: valueBody,
+      },
+    });
+  }
 
   return (
     <div className="flex h-[calc(100dvh-4.5rem)] w-full flex-col md:h-dvh">
@@ -240,10 +299,7 @@ export default function EditTaskLayout({
               )}
             </div>
             <DialogFooter>
-              <Button
-                type="submit"
-                // onClick={handleUpdateLesson}
-              >
+              <Button type="submit" onClick={handleCreateExercise}>
                 Зберегти
               </Button>
             </DialogFooter>

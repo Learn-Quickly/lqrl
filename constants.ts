@@ -9,5 +9,6 @@ export type CourseState = "Draft" | "Published" | "Archived";
 export type ExerciseDifficulty = "Read" | "Easy" | "Medium" | "Hard";
 export type LessonProgressServerState = "InProgress" | "Done";
 export type ExerciseCompletionState = "InProgress" | "Succeeded" | "Failed";
+export type ExerciseType = "Conspect" | "InteractiveConspect";
 
 export const paginationLimit = 6;
