@@ -1,17 +1,20 @@
 import { useCallback } from "react";
 import { Handle, Position } from "reactflow";
-import { DiagramVariant, useDiagramStore } from "@/store/diagram";
+import { DiagramVariant, IHeaderNode, useDiagramStore } from "@/store/diagram";
 import { useParams, usePathname } from "next/navigation";
 
-export function HeaderNode({ id, data }: { id: string; data: {} }) {
+export function HeaderNode({
+  id,
+  data,
+}: {
+  id: string;
+  data: IHeaderNode["data"];
+}) {
   const { task: taskId } = useParams<{ task: string }>();
   const pathname = usePathname();
   const diagramVariant: DiagramVariant = pathname.includes("answer")
     ? "answer"
     : "exercise";
-  const { nodes, edges } = useDiagramStore(
-    (state) => state.diagrams[taskId][diagramVariant],
-  );
   const { displayMode } = useDiagramStore((state) => ({
     displayMode: state.diagrams[taskId]?.[diagramVariant].displayMode,
   }));
@@ -23,7 +26,7 @@ export function HeaderNode({ id, data }: { id: string; data: {} }) {
     },
     [taskId, diagramVariant, id],
   );
-  const title = nodes.find((n) => n.id === id)?.data.header || "";
+  const title = data.header;
 
   if (displayMode === "edit") {
     return (

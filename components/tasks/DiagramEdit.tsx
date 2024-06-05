@@ -24,11 +24,42 @@ import { HeaderNode } from "@/components/nodes/Header";
 import { useParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { nanoid } from "nanoid";
-import { DiagramVariant, useDiagramStore } from "@/store/diagram";
+import {
+  DiagramNode,
+  DiagramVariant,
+  IDefinitionNode,
+  IHeaderNode,
+  IProcessStages,
+  useDiagramStore,
+} from "@/store/diagram";
 
 const nodeTypes = {
   Header: HeaderNode,
 };
+
+function getNewNodeTypeData(
+  type: DiagramNode["type"],
+):
+  | Pick<IHeaderNode, "type" | "data">
+  | Pick<IDefinitionNode, "type" | "data">
+  | Pick<IProcessStages, "type" | "data"> {
+  if (type == "Header") {
+    return { type, data: { header: `${type} node` } };
+  } else if (type == "Definition") {
+    return {
+      type,
+      data: {
+        header: `${type} node`,
+        definition: `${type} node definition`,
+      },
+    };
+  } else {
+    return {
+      type,
+      data: { header: `${type} node`, stages: [{ id: 0, name: "name" }] },
+    };
+  }
+}
 
 function Diagram({ diagramVariant }: { diagramVariant: DiagramVariant }) {
   const { task: taskId } = useParams<{ task: string }>();
@@ -55,16 +86,16 @@ function Diagram({ diagramVariant }: { diagramVariant: DiagramVariant }) {
   const reactFlow = useReactFlow();
 
   const onNewNodeClick = useCallback(
-    (event: any, type: string) => {
+    (event: any, type: DiagramNode["type"]) => {
       const position = reactFlow.screenToFlowPosition({
         x: event.clientX + 75,
         y: event.clientY,
       });
-      const newNode = {
+      const newNodeTypeData = getNewNodeTypeData(type);
+      const newNode: DiagramNode = {
         id: nanoid(),
-        type,
         position,
-        data: { label: `${type} node` },
+        ...newNodeTypeData,
       };
 
       useDiagramStore.getState().setNodes(taskId, diagramVariant, [newNode]);

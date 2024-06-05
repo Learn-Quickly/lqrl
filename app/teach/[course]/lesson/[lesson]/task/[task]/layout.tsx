@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useParams, usePathname } from "next/navigation";
+import { useParams, usePathname, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { ArrowLeft, BookOpenText, NotebookPen, Settings } from "lucide-react";
@@ -28,18 +28,19 @@ import {
 import { ExerciseDifficulty } from "@/constants";
 import { translateExerciseDifficulty } from "@/lib/utils";
 import { clsx } from "clsx";
-import { DiagramVariant, useDiagramStore } from "@/store/diagram";
+import { DiagramVariant, DiagramNode, useDiagramStore } from "@/store/diagram";
 import { useApiCreateExerciseHandler } from "@/hooks/useApiCreateExerciseHandler";
-import { Node, Edge } from "reactflow";
+import { Edge } from "reactflow";
+import { toast } from "sonner";
 
-type DiagramRequestBody = {
+export type DiagramRequestBody = {
   connections: { from: string; to: string }[];
   nodes: {
     id: string;
     x: number;
     y: number;
-    node_type: string;
-    body: string;
+    node_type: DiagramNode["type"];
+    body: DiagramNode["data"];
   }[];
 };
 
@@ -47,7 +48,7 @@ function storeDiagramToRequestDiagram({
   nodes,
   edges,
 }: {
-  nodes: Node[];
+  nodes: DiagramNode[];
   edges: Edge[];
 }): DiagramRequestBody {
   return {
@@ -59,8 +60,8 @@ function storeDiagramToRequestDiagram({
       id,
       x: Math.round(x),
       y: Math.round(y),
-      node_type: type || "",
-      body: JSON.stringify(data),
+      node_type: type,
+      body: data,
     })),
   };
 }
@@ -79,6 +80,7 @@ export default function EditTaskLayout({
     lesson: string;
     task: string;
   }>();
+  const router = useRouter();
   const isNew = taskId === "new";
 
   const [title, setTitle] = useState("");
@@ -108,7 +110,14 @@ export default function EditTaskLayout({
     ? "answer"
     : "exercise";
 
-  const createExercise = useApiCreateExerciseHandler();
+  const createExercise = useApiCreateExerciseHandler({
+    mutation: {
+      onSuccess: () => {
+        toast.success("Вправу успішно створено");
+        router.push(`/teach/${courseId}/lesson/${lessonId}/overview`);
+      },
+    },
+  });
 
   const { nodes, edges } = useDiagramStore((state) => ({
     nodes: state.diagrams[taskId]?.[openedDiagram].nodes || [],
@@ -300,7 +309,7 @@ export default function EditTaskLayout({
             </div>
             <DialogFooter>
               <Button type="submit" onClick={handleCreateExercise}>
-                Зберегти
+                {isNew ? "Створити" : "Зберегти"}
               </Button>
             </DialogFooter>
           </DialogContent>

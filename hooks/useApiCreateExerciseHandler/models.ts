@@ -1,4 +1,5 @@
 import { ExerciseCreatedPayload } from "@/dist/kubb";
+import { DiagramRequestBody } from "@/app/teach/[course]/lesson/[lesson]/task/[task]/layout";
 export type ExerciseCreatePayload = {
   /**
    * @type string
@@ -27,11 +28,11 @@ export type ExerciseCreatePayload = {
   /**
    * @type string
    */
-  exercise_body: string | Object;
+  exercise_body: DiagramRequestBody;
   /**
    * @type string
    */
-  answer_body: string | Object;
+  answer_body: DiagramRequestBody;
 };
 
 /**

@@ -11,7 +11,25 @@ import {
   applyEdgeChanges,
 } from "reactflow";
 
-const initialNodes: Node[] = [
+export interface IHeaderNode extends Node {
+  type: "Header";
+  data: { header: string };
+}
+
+export interface IDefinitionNode extends Node {
+  type: "Definition";
+  data: { header: string; definition: string };
+}
+
+type ProcessStage = { id: number; name: string };
+export interface IProcessStages extends Node {
+  type: "ProcessStages";
+  data: { header: string; stages: ProcessStage[] };
+}
+
+export type DiagramNode = IHeaderNode | IDefinitionNode | IProcessStages;
+
+const initialNodes: DiagramNode[] = [
   {
     id: "1",
     position: { x: 0, y: 0 },
@@ -31,14 +49,16 @@ const initialEdges = [{ id: "e1-2", source: "1", target: "2" }];
 type DisplayMode = "edit" | "view";
 
 type DiagramState = {
-  nodes: Node[];
+  nodes: DiagramNode[];
   edges: Edge[];
   displayMode: DisplayMode;
 };
 
 export type DiagramVariant = "answer" | "exercise";
 type RFState = {
-  diagrams: { [key: string]: { answer: DiagramState; exercise: DiagramState } };
+  diagrams: {
+    [taskId: string]: { answer: DiagramState; exercise: DiagramState };
+  };
   onNodesChange: (
     taskId: string,
     diagramVariant: DiagramVariant,
@@ -57,7 +77,7 @@ type RFState = {
   setNodes: (
     taskId: string,
     diagramVariant: DiagramVariant,
-    nodes: Node[],
+    nodes: DiagramNode[],
   ) => void;
   setEdges: (
     taskId: string,
@@ -90,7 +110,8 @@ export const useDiagramStore = createWithEqualityFn<RFState>(
       set((state) => {
         const diagram = state.diagrams[taskId];
         if (diagram) {
-          diagram[diagramVariant].nodes = applyNodeChanges(
+          // @ts-ignore
+          diagram[diagramVariant].nodes = applyNodeChanges<DiagramNode["data"]>(
             changes,
             diagram[diagramVariant].nodes,
           );
@@ -136,7 +157,7 @@ export const useDiagramStore = createWithEqualityFn<RFState>(
     setNodes: (
       taskId: string,
       diagramVariant: DiagramVariant,
-      nodes: Node[],
+      nodes: DiagramNode[],
     ) => {
       set((state) => {
         const diagram = state.diagrams[taskId];

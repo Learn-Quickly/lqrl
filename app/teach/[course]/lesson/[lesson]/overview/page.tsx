@@ -27,7 +27,7 @@ export default function LessonEditPage() {
             <Link
               href={`/teach/${courseId}/lesson/${lessonId}/task/new/answer`}
             >
-              Додати урок
+              Додати вправу
             </Link>
           </Button>
         </div>
