@@ -90,11 +90,7 @@ function getCurrentLessonState({
 
 export default function LearnCourseLessons() {
   const { course: courseId } = useParams<{ course: string }>();
-  const lessons = useApiGetLessonsHandler(parseInt(courseId), {
-    query: {
-      refetchOnWindowFocus: false,
-    },
-  });
+  const lessons = useApiGetLessonsHandler(parseInt(courseId));
 
   const progresses = useApiGetLessonProgressesHandler(
     { course_id: parseInt(courseId) },

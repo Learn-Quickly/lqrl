@@ -19,11 +19,7 @@ export default function Teach() {
       filters: courseFilter,
       list_options: `{"limit": ${paginationLimit}, "offset": ${(page - 1) * paginationLimit}}`,
     },
-    {
-      query: {
-        refetchOnMount: true,
-      },
-    },
+    {},
   );
 
   return (

@@ -7,11 +7,7 @@ import { CourseLesson } from "@/components/course/CourseLesson";
 
 export default function Lessons() {
   const { course: courseId } = useParams<{ course: string }>();
-  const lessons = useApiGetLessonsHandler(parseInt(courseId), {
-    query: {
-      refetchOnWindowFocus: false,
-    },
-  });
+  const lessons = useApiGetLessonsHandler(parseInt(courseId));
   return (
     <section className="w-full border-t py-12">
       <div className="grid gap-12 px-4 md:px-6">
