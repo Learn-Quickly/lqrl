@@ -43,6 +43,7 @@ export default function LessonEditPage() {
               timeToComplete={exercise.time_to_complete || 0}
               difficulty={exercise.difficult as ExerciseDifficulty}
               intent="edit"
+              btnLabel="Редагувати"
               href={`/teach/${courseId}/lesson/${lessonId}/task/${exercise.exercise_id}/answer`}
               isLast={exercise.exercise_order === exercises.data.length}
             />

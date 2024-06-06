@@ -141,7 +141,7 @@ export default function LearnCourseLessons() {
                   )}
                   href={
                     state == "Unavailable"
-                      ? "#"
+                      ? undefined
                       : `/learn/${courseId}/lesson/${lesson.id}/overview`
                   }
                 />
