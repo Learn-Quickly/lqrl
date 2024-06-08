@@ -11,7 +11,7 @@ import ReactFlow, {
   useReactFlow,
 } from "reactflow";
 import "reactflow/dist/style.css";
-import { Eye } from "lucide-react";
+import { BookA, Eye, FastForward } from "lucide-react";
 import { IconHeading } from "@tabler/icons-react";
 import { Toggle } from "@/components/ui/toggle";
 import {
@@ -32,9 +32,11 @@ import {
   IProcessStages,
   useDiagramStore,
 } from "@/store/diagram";
+import { DefinitionNode } from "@/components/nodes/Definition";
 
 const nodeTypes = {
   Header: HeaderNode,
+  Definition: DefinitionNode,
 };
 
 function getNewNodeTypeData(
@@ -146,12 +148,12 @@ function Diagram({ diagramVariant }: { diagramVariant: DiagramVariant }) {
                   <Eye className="h-4 w-4" />
                 </Toggle>
               </TooltipTrigger>
-              <TooltipContent>Preview</TooltipContent>
+              <TooltipContent>Попередній перегляд</TooltipContent>
             </Tooltip>
           </TooltipProvider>
         </Panel>
         {displayMode == "edit" && (
-          <div className="absolute left-4 top-1/2 z-10 flex -translate-y-1/2 flex-col gap-1 rounded-2xl bg-stone-700 bg-opacity-10 p-1">
+          <div className="absolute left-4 top-1/2 z-10 flex -translate-y-1/2 flex-col gap-2 rounded-2xl bg-stone-700 bg-opacity-10 p-1">
             <div className="flex flex-col gap-1.5 rounded-xl bg-white p-2">
               <Button
                 variant="ghost"
@@ -159,7 +161,27 @@ function Diagram({ diagramVariant }: { diagramVariant: DiagramVariant }) {
                 onClick={(e) => onNewNodeClick(e, "Header")}
               >
                 <IconHeading className="size-5" />
-                <span className="text-xs">Header</span>
+                <span className="text-xs">Заголовок</span>
+              </Button>
+            </div>
+            <div className="flex flex-col gap-1.5 rounded-xl bg-white p-2">
+              <Button
+                variant="ghost"
+                className="flex size-16 flex-col gap-1"
+                onClick={(e) => onNewNodeClick(e, "Definition")}
+              >
+                <BookA className="size-5" />
+                <span className="text-xs">Визначення</span>
+              </Button>
+            </div>
+            <div className="flex flex-col gap-1.5 rounded-xl bg-white p-2">
+              <Button
+                variant="ghost"
+                className="flex size-16 flex-col gap-1"
+                onClick={(e) => onNewNodeClick(e, "Definition")}
+              >
+                <FastForward className="size-5" />
+                <span className="text-xs">Етапи</span>
               </Button>
             </div>
           </div>

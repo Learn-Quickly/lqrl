@@ -1,14 +1,18 @@
 import { useCallback } from "react";
-import { Handle, Position } from "reactflow";
-import { DiagramVariant, IHeaderNode, useDiagramStore } from "@/store/diagram";
+import {
+  DiagramVariant,
+  IDefinitionNode,
+  useDiagramStore,
+} from "@/store/diagram";
 import { useParams, usePathname } from "next/navigation";
+import { Handle, Position } from "reactflow";
 
-export function HeaderNode({
+export function DefinitionNode({
   id,
-  data: { header: title },
+  data: { header, definition },
 }: {
   id: string;
-  data: IHeaderNode["data"];
+  data: IDefinitionNode["data"];
 }) {
   const { task: taskId } = useParams<{ task: string }>();
   const pathname = usePathname();
@@ -18,11 +22,21 @@ export function HeaderNode({
   const { displayMode } = useDiagramStore((state) => ({
     displayMode: state.diagrams[taskId]?.[diagramVariant].displayMode,
   }));
-  const onChange = useCallback(
+
+  const onHeaderChange = useCallback(
     (evt: any) => {
       useDiagramStore
         .getState()
-        .setHeaderTitle(taskId, diagramVariant, id, evt.target.value);
+        .setDefinitionTitle(taskId, diagramVariant, id, evt.target.value);
+    },
+    [taskId, diagramVariant, id],
+  );
+
+  const onDefinitionChange = useCallback(
+    (evt: any) => {
+      useDiagramStore
+        .getState()
+        .setDefinitionText(taskId, diagramVariant, id, evt.target.value);
     },
     [taskId, diagramVariant, id],
   );
@@ -38,8 +52,18 @@ export function HeaderNode({
           <input
             id="text"
             name="text"
-            value={title}
-            onChange={onChange}
+            value={header}
+            onChange={onHeaderChange}
+            className="nodrag"
+          />
+          <label htmlFor="definition" className="text-xs">
+            Визначення
+          </label>
+          <textarea
+            id="definition"
+            name="definition"
+            value={definition}
+            onChange={onDefinitionChange}
             className="nodrag"
           />
         </div>
@@ -51,7 +75,8 @@ export function HeaderNode({
       <>
         <Handle type="target" position={Position.Top} />
         <div className="flex flex-col border border-stone-500 bg-stone-50 p-1">
-          <h1 className="text-lg">{title}</h1>
+          <h1 className="text-sm font-semibold">{header}</h1>
+          <p className="text-xs">{definition}</p>
         </div>
         <Handle type="source" position={Position.Bottom} id="a" />
       </>

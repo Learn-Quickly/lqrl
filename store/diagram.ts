@@ -95,6 +95,18 @@ type RFState = {
     id: string,
     title: string,
   ) => void;
+  setDefinitionTitle: (
+    taskId: string,
+    diagramVariant: DiagramVariant,
+    id: string,
+    title: string,
+  ) => void;
+  setDefinitionText: (
+    taskId: string,
+    diagramVariant: DiagramVariant,
+    id: string,
+    text: string,
+  ) => void;
   initializeDiagram: (taskId: string, defaultDisplayMode?: DisplayMode) => void;
 };
 
@@ -212,6 +224,46 @@ export const useDiagramStore = createWithEqualityFn<RFState>(
             (node) =>
               node.id === id && node.type === "Header"
                 ? { ...node, data: { ...node.data, header: title } }
+                : node,
+          );
+        }
+        return { diagrams: { ...state.diagrams, [taskId]: diagram } };
+      });
+    },
+
+    setDefinitionTitle: (
+      taskId: string,
+      diagramVariant: DiagramVariant,
+      id: string,
+      title: string,
+    ) => {
+      set((state) => {
+        const diagram = state.diagrams[taskId];
+        if (diagram) {
+          diagram[diagramVariant].nodes = diagram[diagramVariant].nodes.map(
+            (node) =>
+              node.id === id && node.type === "Definition"
+                ? { ...node, data: { ...node.data, header: title } }
+                : node,
+          );
+        }
+        return { diagrams: { ...state.diagrams, [taskId]: diagram } };
+      });
+    },
+
+    setDefinitionText: (
+      taskId: string,
+      diagramVariant: DiagramVariant,
+      id: string,
+      text: string,
+    ) => {
+      set((state) => {
+        const diagram = state.diagrams[taskId];
+        if (diagram) {
+          diagram[diagramVariant].nodes = diagram[diagramVariant].nodes.map(
+            (node) =>
+              node.id === id && node.type === "Definition"
+                ? { ...node, data: { ...node.data, definition: text } }
                 : node,
           );
         }
