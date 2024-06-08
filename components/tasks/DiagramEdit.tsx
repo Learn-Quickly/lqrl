@@ -33,10 +33,12 @@ import {
   useDiagramStore,
 } from "@/store/diagram";
 import { DefinitionNode } from "@/components/nodes/Definition";
+import { ProcessStagesNode } from "@/components/nodes/ProcessStages";
 
 const nodeTypes = {
   Header: HeaderNode,
   Definition: DefinitionNode,
+  ProcessStages: ProcessStagesNode,
 };
 
 function getNewNodeTypeData(
@@ -178,7 +180,7 @@ function Diagram({ diagramVariant }: { diagramVariant: DiagramVariant }) {
               <Button
                 variant="ghost"
                 className="flex size-16 flex-col gap-1"
-                onClick={(e) => onNewNodeClick(e, "Definition")}
+                onClick={(e) => onNewNodeClick(e, "ProcessStages")}
               >
                 <FastForward className="size-5" />
                 <span className="text-xs">Етапи</span>

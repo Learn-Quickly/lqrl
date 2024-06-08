@@ -34,17 +34,26 @@ const initialNodes: DiagramNode[] = [
     id: "1",
     position: { x: 0, y: 0 },
     type: "Header",
-    data: { header: "Theme 1" },
+    data: { header: "Theme of the conspect" },
   },
   {
     id: "2",
-    position: { x: 0, y: 100 },
-    type: "Header",
-    data: { header: "Theme 2" },
+    position: { x: 80, y: 100 },
+    type: "Definition",
+    data: { header: "Definition", definition: "Definition text" },
+  },
+  {
+    id: "3",
+    position: { x: 60, y: 230 },
+    type: "ProcessStages",
+    data: { header: "Process stages", stages: [{ id: 0, name: "Stage 1" }] },
   },
 ];
 
-const initialEdges = [{ id: "e1-2", source: "1", target: "2" }];
+const initialEdges: Edge[] = [
+  { id: "e1-2", source: "1", target: "2" },
+  { id: "e2-3", source: "2", target: "3" },
+];
 
 type DisplayMode = "edit" | "view";
 
@@ -106,6 +115,29 @@ type RFState = {
     diagramVariant: DiagramVariant,
     id: string,
     text: string,
+  ) => void;
+  setProcessStagesHeader: (
+    taskId: string,
+    diagramVariant: DiagramVariant,
+    id: string,
+    title: string,
+  ) => void;
+  addProcessStage: (
+    taskId: string,
+    diagramVariant: DiagramVariant,
+    stage: ProcessStage,
+  ) => void;
+  setProcessStagesStage: (
+    taskId: string,
+    diagramVariant: DiagramVariant,
+    id: string,
+    stage: ProcessStage,
+  ) => void;
+  removeProcessStage: (
+    taskId: string,
+    diagramVariant: DiagramVariant,
+    id: string,
+    stageId: number,
   ) => void;
   initializeDiagram: (taskId: string, defaultDisplayMode?: DisplayMode) => void;
 };
@@ -293,6 +325,105 @@ export const useDiagramStore = createWithEqualityFn<RFState>(
         return {
           diagrams: { ...state.diagrams, [taskId]: state.diagrams[taskId] },
         };
+      });
+    },
+
+    setProcessStagesHeader: (
+      taskId: string,
+      diagramVariant: DiagramVariant,
+      id: string,
+      title: string,
+    ) => {
+      set((state) => {
+        const diagram = state.diagrams[taskId];
+        if (diagram) {
+          diagram[diagramVariant].nodes = diagram[diagramVariant].nodes.map(
+            (node) =>
+              node.id === id && node.type === "ProcessStages"
+                ? { ...node, data: { ...node.data, header: title } }
+                : node,
+          );
+        }
+        return { diagrams: { ...state.diagrams, [taskId]: diagram } };
+      });
+    },
+
+    addProcessStage: (
+      taskId: string,
+      diagramVariant: DiagramVariant,
+      stage: ProcessStage,
+    ) => {
+      set((state) => {
+        const diagram = state.diagrams[taskId];
+        if (diagram) {
+          diagram[diagramVariant].nodes = diagram[diagramVariant].nodes.map(
+            (node) =>
+              node.type === "ProcessStages"
+                ? {
+                    ...node,
+                    data: {
+                      ...node.data,
+                      stages: [...node.data.stages, stage],
+                    },
+                  }
+                : node,
+          );
+        }
+        return { diagrams: { ...state.diagrams, [taskId]: diagram } };
+      });
+    },
+
+    setProcessStagesStage: (
+      taskId: string,
+      diagramVariant: DiagramVariant,
+      id: string,
+      stage: ProcessStage,
+    ) => {
+      set((state) => {
+        const diagram = state.diagrams[taskId];
+        if (diagram) {
+          diagram[diagramVariant].nodes = diagram[diagramVariant].nodes.map(
+            (node) =>
+              node.id === id && node.type === "ProcessStages"
+                ? {
+                    ...node,
+                    data: {
+                      ...node.data,
+                      stages: node.data.stages.map((s) =>
+                        s.id === stage.id ? stage : s,
+                      ),
+                    },
+                  }
+                : node,
+          );
+        }
+        return { diagrams: { ...state.diagrams, [taskId]: diagram } };
+      });
+    },
+
+    removeProcessStage: (
+      taskId: string,
+      diagramVariant: DiagramVariant,
+      id: string,
+      stageId: number,
+    ) => {
+      set((state) => {
+        const diagram = state.diagrams[taskId];
+        if (diagram) {
+          diagram[diagramVariant].nodes = diagram[diagramVariant].nodes.map(
+            (node) =>
+              node.id === id && node.type === "ProcessStages"
+                ? {
+                    ...node,
+                    data: {
+                      ...node.data,
+                      stages: node.data.stages.filter((s) => s.id !== stageId),
+                    },
+                  }
+                : node,
+          );
+        }
+        return { diagrams: { ...state.diagrams, [taskId]: diagram } };
       });
     },
   }),

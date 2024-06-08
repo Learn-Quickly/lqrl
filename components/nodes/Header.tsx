@@ -31,7 +31,7 @@ export function HeaderNode({
     return (
       <>
         <Handle type="target" position={Position.Top} />
-        <div className="flex flex-col border border-stone-500 bg-stone-50 p-1">
+        <div className="flex flex-col border border-primary-500 bg-primary-50 p-1">
           <label htmlFor="text" className="text-xs">
             Заголовок
           </label>
@@ -50,8 +50,8 @@ export function HeaderNode({
     return (
       <>
         <Handle type="target" position={Position.Top} />
-        <div className="flex flex-col border border-stone-500 bg-stone-50 p-1">
-          <h1 className="text-lg">{title}</h1>
+        <div className="flex flex-col rounded-md border-2 border-amber-500 bg-amber-50 p-4 shadow-lg">
+          <h1 className="text-2xl font-bold text-amber-700">{title}</h1>
         </div>
         <Handle type="source" position={Position.Bottom} id="a" />
       </>

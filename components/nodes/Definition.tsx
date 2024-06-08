@@ -45,7 +45,7 @@ export function DefinitionNode({
     return (
       <>
         <Handle type="target" position={Position.Top} />
-        <div className="flex flex-col border border-stone-500 bg-stone-50 p-1">
+        <div className="flex flex-col border border-primary-500 bg-primary-50 p-1">
           <label htmlFor="text" className="text-xs">
             Заголовок
           </label>
@@ -74,9 +74,9 @@ export function DefinitionNode({
     return (
       <>
         <Handle type="target" position={Position.Top} />
-        <div className="flex flex-col border border-stone-500 bg-stone-50 p-1">
-          <h1 className="text-sm font-semibold">{header}</h1>
-          <p className="text-xs">{definition}</p>
+        <div className="flex flex-col rounded-md border-2 border-green-500 bg-green-50 p-4 shadow-lg">
+          <h1 className="text-lg font-bold text-green-700">{header}</h1>
+          <p className="mt-2 text-sm text-green-600">{definition}</p>
         </div>
         <Handle type="source" position={Position.Bottom} id="a" />
       </>
