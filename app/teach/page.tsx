@@ -26,7 +26,7 @@ export default function Teach() {
     <>
       <main className="flex min-h-full max-w-7xl grow flex-col gap-8 p-12 md:overflow-y-auto md:p-24">
         <div className="flex flex-col justify-between gap-2 sm:flex-row">
-          <H1>Кабінет творця</H1>
+          <H1>Кабінет вчителя</H1>
           <CoursesFilter setFilter={setCourseFilter} />
         </div>
 

@@ -102,7 +102,7 @@ export function CourseCard({
 export function CourseCardNew() {
   return (
     <Card>
-      <Link href="/course/new">
+      <Link href="/teach/new">
         <CardContent className="flex h-full items-center justify-center p-6">
           <Plus />
         </CardContent>

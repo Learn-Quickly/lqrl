@@ -78,14 +78,14 @@ export function LessonExercise({
         <div className="grid grid-cols-2 gap-6">
           <div className="space-y-1">
             <p className="text-sm font-medium text-gray-500">
-              Time to complete
+              Час на виконання
             </p>
             <p className="text-base font-medium">
               {secondsToTime(timeToComplete)}
             </p>
           </div>
           <div className="space-y-1">
-            <p className="text-sm font-medium text-gray-500">Difficulty</p>
+            <p className="text-sm font-medium text-gray-500">Важкість</p>
             <p className="text-base font-medium">
               {translateExerciseDifficulty(difficulty)}
             </p>

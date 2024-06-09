@@ -54,7 +54,7 @@ export function Navigation() {
               className={teachPath ? "sm:w-28" : ""}
               variant={teachPath ? "default" : "ghost"}
             >
-              <Link href="/teach">
+              <Link href={isLogged ? "/teach" : "#"}>
                 <UsersRound
                   className={clsx("size-4", teachPath && "sm:mr-2")}
                 />

@@ -74,7 +74,7 @@ export function DefinitionNode({
     return (
       <>
         <Handle type="target" position={Position.Top} />
-        <div className="flex flex-col rounded-md border-2 border-green-500 bg-green-50 p-4 shadow-lg">
+        <div className="flex max-w-96 flex-col rounded-md border-2 border-green-500 bg-green-50 p-4 shadow-lg">
           <h1 className="text-lg font-bold text-green-700">{header}</h1>
           <p className="mt-2 text-sm text-green-600">{definition}</p>
         </div>

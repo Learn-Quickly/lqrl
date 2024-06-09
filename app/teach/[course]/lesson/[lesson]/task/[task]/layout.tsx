@@ -290,7 +290,7 @@ export default function EditTaskLayout({
                   <div className="col-span-3 flex items-center gap-2">
                     <Input
                       id="task-time-minutes"
-                      placeholder="Мінути"
+                      placeholder="Хвилини"
                       type="number"
                       value={minutes}
                       onChange={handleSetMinutes}

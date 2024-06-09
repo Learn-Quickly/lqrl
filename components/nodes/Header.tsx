@@ -50,7 +50,7 @@ export function HeaderNode({
     return (
       <>
         <Handle type="target" position={Position.Top} />
-        <div className="flex flex-col rounded-md border-2 border-amber-500 bg-amber-50 p-4 shadow-lg">
+        <div className="flex max-w-96 flex-col rounded-md border-2 border-amber-500 bg-amber-50 p-4 shadow-lg">
           <h1 className="text-2xl font-bold text-amber-700">{title}</h1>
         </div>
         <Handle type="source" position={Position.Bottom} id="a" />
