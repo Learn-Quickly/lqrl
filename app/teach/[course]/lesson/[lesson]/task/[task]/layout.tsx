@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams, usePathname, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
@@ -26,12 +26,17 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ExerciseDifficulty } from "@/constants";
-import { translateExerciseDifficulty } from "@/lib/utils";
+import {
+  secondsToMinutesAndSeconds,
+  translateExerciseDifficulty,
+} from "@/lib/utils";
 import { clsx } from "clsx";
 import { DiagramVariant, DiagramNode, useDiagramStore } from "@/store/diagram";
 import { useApiCreateExerciseHandler } from "@/hooks/useApiCreateExerciseHandler";
 import { Edge } from "reactflow";
 import { toast } from "sonner";
+import { useApiGetExerciseHandler } from "@/dist/kubb";
+import { useQueryClient } from "@tanstack/react-query";
 
 export type DiagramRequestBody = {
   connections: { from: string; to: string }[];
@@ -89,6 +94,23 @@ export default function EditTaskLayout({
   const [minutes, setMinutes] = useState("");
   const [seconds, setSeconds] = useState("");
 
+  const exercise = useApiGetExerciseHandler(parseInt(taskId));
+
+  useEffect(() => {
+    if (exercise.data) {
+      setTitle(exercise.data.title);
+      setDescription(exercise.data.description);
+      setDifficulty(exercise.data.difficult as ExerciseDifficulty);
+      if (exercise.data.time_to_complete) {
+        const { minutes, seconds } = secondsToMinutesAndSeconds(
+          exercise.data.time_to_complete,
+        );
+        setMinutes(minutes.toString());
+        setSeconds(seconds.toString());
+      }
+    }
+  }, [exercise.data]);
+
   const handleSetMinutes = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = parseInt(e.target.value);
     setMinutes(value < 0 ? "0" : e.target.value);
@@ -110,9 +132,18 @@ export default function EditTaskLayout({
     ? "answer"
     : "exercise";
 
+  const queryClient = useQueryClient();
   const createExercise = useApiCreateExerciseHandler({
     mutation: {
-      onSuccess: () => {
+      onSuccess: async () => {
+        await queryClient.invalidateQueries({
+          queryKey: [
+            {
+              url: "/api/course/lesson/exercise/get_lesson_exercises/:lesson_id",
+              params: { lessonId: parseInt(lessonId) },
+            },
+          ],
+        });
         toast.success("Вправу успішно створено");
         router.push(`/teach/${courseId}/lesson/${lessonId}/overview`);
       },

@@ -1,6 +1,7 @@
 export const loginReasons = {
   usernameUpdated: "usernameUpdated",
   passwordUpdated: "passwordUpdated",
+  logout: "logout",
 };
 export const authStoreKey = "auth-storage";
 

@@ -21,7 +21,7 @@ export function Navigation() {
 
   const handleLogout = () => {
     logout();
-    router.push("/login");
+    router.push("/login?reason=logout");
   };
 
   return (

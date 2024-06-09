@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useApiLoginHandler } from "@/dist/kubb";
 import Link from "next/link";
@@ -11,6 +11,13 @@ export default function Login() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const reason = searchParams.get("reason");
+
+  useEffect(() => {
+    if (router && reason == loginReasons.logout) {
+      window.history.replaceState(null, "", "/login");
+      window.location.reload();
+    }
+  }, [reason, router]);
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -87,6 +94,9 @@ export default function Login() {
         )}
         <Link href="/register" className="mt-4 text-primary-600">
           Реєстрація
+        </Link>
+        <Link href="/recover-password" className="mt-4 text-primary-600">
+          Відновлення паролю
         </Link>
       </form>
     </div>

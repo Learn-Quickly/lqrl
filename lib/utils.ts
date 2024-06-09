@@ -36,6 +36,12 @@ export const secondsToTime = (seconds: number) => {
   return `${minutes}:${remainingSeconds < 10 ? "0" : ""}${remainingSeconds}`;
 };
 
+export function secondsToMinutesAndSeconds(totalSeconds: number) {
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
+  return { minutes, seconds };
+}
+
 export const timestampToDateString = (timestamp: number) => {
   // Convert the timestamp to milliseconds (JavaScript timestamps are in milliseconds)
   const date = new Date(timestamp * 1000);
