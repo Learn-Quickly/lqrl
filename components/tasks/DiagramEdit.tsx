@@ -84,7 +84,14 @@ function Diagram({ diagramVariant }: { diagramVariant: DiagramVariant }) {
   const [isInitialized, setIsInitialized] = useState(false);
 
   useEffect(() => {
-    if (!diagrams[taskId] && exercise.data) {
+    if (taskId == "new" && !isInitialized && initializeDiagram) {
+      initializeDiagram({ taskId, defaultDisplayMode: "edit" });
+      setIsInitialized(true);
+    }
+  }, [taskId, initializeDiagram, isInitialized]);
+
+  useEffect(() => {
+    if (taskId != "new" && !diagrams[taskId] && exercise.data) {
       initializeDiagram({
         taskId,
         defaultDisplayMode: "edit",

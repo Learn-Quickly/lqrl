@@ -117,13 +117,23 @@ export default function EditTaskLayout({
     },
   });
 
-  const { nodes, edges } = useDiagramStore((state) => ({
-    nodes: state.diagrams[taskId]?.[openedDiagram].nodes || [],
-    edges: state.diagrams[taskId]?.[openedDiagram].edges || [],
-  }));
+  const { answerNodes, answerEdges, exerciseNodes, exerciseEdges } =
+    useDiagramStore((state) => ({
+      answerNodes: state.diagrams[taskId]?.answer.nodes || [],
+      answerEdges: state.diagrams[taskId]?.answer.edges || [],
+      exerciseNodes: state.diagrams[taskId]?.exercise.nodes || [],
+      exerciseEdges: state.diagrams[taskId]?.exercise.edges || [],
+    }));
 
   function handleCreateExercise() {
-    const valueBody = storeDiagramToRequestDiagram({ nodes, edges });
+    const answerBody = storeDiagramToRequestDiagram({
+      nodes: answerNodes,
+      edges: answerEdges,
+    });
+    const exerciseBody = storeDiagramToRequestDiagram({
+      nodes: exerciseNodes,
+      edges: exerciseEdges,
+    });
     createExercise.mutate({
       data: {
         title,
@@ -133,8 +143,8 @@ export default function EditTaskLayout({
         lesson_id: parseInt(lessonId),
         exercise_type:
           difficulty == "Read" ? "Conspect" : "InteractiveConspect",
-        answer_body: valueBody,
-        exercise_body: valueBody,
+        answer_body: answerBody,
+        exercise_body: difficulty == "Read" ? answerBody : exerciseBody,
       },
     });
   }
