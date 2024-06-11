@@ -7,11 +7,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { BadgeIcon } from "lucide-react";
+import { BadgeCheckIcon, BadgeIcon } from "lucide-react";
 import { useApiGetAttendants, useApiGetLessonsHandler } from "@/dist/kubb";
 import { useParams, useSearchParams } from "next/navigation";
 import { getCompletedPercentage, timestampToDateString } from "@/lib/utils";
-import { clsx } from "clsx";
 import { paginationLimit } from "@/constants";
 import { Pagination } from "@/components/Pagination";
 
@@ -59,14 +58,11 @@ function Attendee({
               Сертифікат
             </p>
             <div className="flex items-center space-x-2">
-              <BadgeIcon
-                className={clsx(
-                  "size-6",
-                  completionPercentage == 100
-                    ? "text-green-500"
-                    : "text-gray-200",
-                )}
-              />
+              {completionPercentage == 100 ? (
+                <BadgeCheckIcon className="size-6 text-green-500" />
+              ) : (
+                <BadgeIcon className="size-6 text-gray-200" />
+              )}
               <span className="text-base font-medium">
                 {completionPercentage == 100
                   ? "Нагороджений"

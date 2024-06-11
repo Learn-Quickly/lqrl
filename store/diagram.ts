@@ -29,32 +29,6 @@ export interface IProcessStages extends Node {
 
 export type DiagramNode = IHeaderNode | IDefinitionNode | IProcessStages;
 
-const initialNodes: DiagramNode[] = [
-  {
-    id: "1",
-    position: { x: 0, y: 0 },
-    type: "Header",
-    data: { header: "Theme of the conspect" },
-  },
-  {
-    id: "2",
-    position: { x: 80, y: 100 },
-    type: "Definition",
-    data: { header: "Definition", definition: "Definition text" },
-  },
-  {
-    id: "3",
-    position: { x: 60, y: 230 },
-    type: "ProcessStages",
-    data: { header: "Process stages", stages: [{ id: 0, name: "Stage 1" }] },
-  },
-];
-
-const initialEdges: Edge[] = [
-  { id: "e1-2", source: "1", target: "2" },
-  { id: "e2-3", source: "2", target: "3" },
-];
-
 type DisplayMode = "edit" | "view";
 
 type DiagramState = {
@@ -139,7 +113,14 @@ type RFState = {
     id: string,
     stageId: number,
   ) => void;
-  initializeDiagram: (taskId: string, defaultDisplayMode?: DisplayMode) => void;
+  initializeDiagram: (params: {
+    taskId: string;
+    defaultDisplayMode?: DisplayMode;
+    initialAnswerNodes?: DiagramNode[];
+    initialAnswerEdges?: Edge[];
+    initialExerciseNodes?: DiagramNode[];
+    initialExerciseEdges?: Edge[];
+  }) => void;
 };
 
 export const useDiagramStore = createWithEqualityFn<RFState>(
@@ -303,21 +284,25 @@ export const useDiagramStore = createWithEqualityFn<RFState>(
       });
     },
 
-    initializeDiagram: (
-      taskId: string,
-      defaultDisplayMode: DisplayMode = "view",
-    ) => {
+    initializeDiagram: ({
+      taskId,
+      defaultDisplayMode = "view",
+      initialAnswerNodes = [],
+      initialAnswerEdges = [],
+      initialExerciseNodes = [],
+      initialExerciseEdges = [],
+    }) => {
       set((state) => {
         if (!state.diagrams[taskId]) {
           state.diagrams[taskId] = {
             answer: {
-              nodes: initialNodes,
-              edges: initialEdges,
+              nodes: initialAnswerNodes,
+              edges: initialAnswerEdges,
               displayMode: defaultDisplayMode,
             },
             exercise: {
-              nodes: initialNodes,
-              edges: initialEdges,
+              nodes: initialExerciseNodes,
+              edges: initialExerciseEdges,
               displayMode: defaultDisplayMode,
             },
           };

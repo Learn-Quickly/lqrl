@@ -34,6 +34,8 @@ import {
 } from "@/store/diagram";
 import { DefinitionNode } from "@/components/nodes/Definition";
 import { ProcessStagesNode } from "@/components/nodes/ProcessStages";
+import { useApiGetExerciseHandler } from "@/hooks/useApiGetExerciseHandler";
+import { serverConnectionsToEdges, serverNodesToNodes } from "@/lib/diagram";
 
 const nodeTypes = {
   Header: HeaderNode,
@@ -67,6 +69,7 @@ function getNewNodeTypeData(
 
 function Diagram({ diagramVariant }: { diagramVariant: DiagramVariant }) {
   const { task: taskId } = useParams<{ task: string }>();
+  const exercise = useApiGetExerciseHandler(parseInt(taskId));
 
   const { diagrams, initializeDiagram } = useDiagramStore((state) => ({
     diagrams: state.diagrams,
@@ -75,17 +78,30 @@ function Diagram({ diagramVariant }: { diagramVariant: DiagramVariant }) {
   const { nodes, edges, displayMode } = useDiagramStore((state) => ({
     nodes: state.diagrams[taskId]?.[diagramVariant].nodes || [],
     edges: state.diagrams[taskId]?.[diagramVariant].edges || [],
-    displayMode: state.diagrams[taskId]?.[diagramVariant].displayMode || "view",
+    displayMode: state.diagrams[taskId]?.[diagramVariant].displayMode || "edit",
   }));
 
   const [isInitialized, setIsInitialized] = useState(false);
 
   useEffect(() => {
-    if (!diagrams[taskId]) {
-      initializeDiagram(taskId, "view");
+    if (!diagrams[taskId] && exercise.data) {
+      initializeDiagram({
+        taskId,
+        defaultDisplayMode: "edit",
+        initialExerciseNodes: serverNodesToNodes(
+          exercise.data.exercise_body.nodes,
+        ),
+        initialExerciseEdges: serverConnectionsToEdges(
+          exercise.data.exercise_body.connections,
+        ),
+        initialAnswerNodes: serverNodesToNodes(exercise.data.answer_body.nodes),
+        initialAnswerEdges: serverConnectionsToEdges(
+          exercise.data.answer_body.connections,
+        ),
+      });
     }
     setIsInitialized(true);
-  }, [taskId, diagrams, initializeDiagram]);
+  }, [taskId, diagrams, initializeDiagram, exercise.data]);
 
   const reactFlow = useReactFlow();
 

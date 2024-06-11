@@ -31,45 +31,12 @@ import {
   translateExerciseDifficulty,
 } from "@/lib/utils";
 import { clsx } from "clsx";
-import { DiagramVariant, DiagramNode, useDiagramStore } from "@/store/diagram";
+import { DiagramVariant, useDiagramStore } from "@/store/diagram";
 import { useApiCreateExerciseHandler } from "@/hooks/useApiCreateExerciseHandler";
-import { Edge } from "reactflow";
 import { toast } from "sonner";
 import { useApiGetExerciseHandler } from "@/dist/kubb";
 import { useQueryClient } from "@tanstack/react-query";
-
-export type DiagramRequestBody = {
-  connections: { from: string; to: string }[];
-  nodes: {
-    id: string;
-    x: number;
-    y: number;
-    node_type: DiagramNode["type"];
-    body: DiagramNode["data"];
-  }[];
-};
-
-function storeDiagramToRequestDiagram({
-  nodes,
-  edges,
-}: {
-  nodes: DiagramNode[];
-  edges: Edge[];
-}): DiagramRequestBody {
-  return {
-    connections: edges.map(({ source, target }) => ({
-      from: source,
-      to: target,
-    })),
-    nodes: nodes.map(({ id, position: { x, y }, type, data }) => ({
-      id,
-      x: Math.round(x),
-      y: Math.round(y),
-      node_type: type,
-      body: data,
-    })),
-  };
-}
+import { storeDiagramToRequestDiagram } from "@/lib/diagram";
 
 export default function EditTaskLayout({
   children,
