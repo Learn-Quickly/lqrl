@@ -6,6 +6,8 @@ import {
 } from "@/store/diagram";
 import { useParams, usePathname } from "next/navigation";
 import { Handle, Position } from "reactflow";
+import { Button } from "@/components/ui/button";
+import { Trash } from "lucide-react";
 
 export function DefinitionNode({
   id,
@@ -41,14 +43,34 @@ export function DefinitionNode({
     [taskId, diagramVariant, id],
   );
 
-  if (displayMode === "edit") {
-    return (
-      <>
-        <Handle type="target" position={Position.Top} />
+  const { removeNode } = useDiagramStore.getState();
+  function handleRemoveNode() {
+    removeNode({
+      taskId,
+      diagramVariant,
+      nodeId: id,
+    });
+  }
+
+  return (
+    <>
+      <Handle type="target" position={Position.Top} />
+      {displayMode == "edit" ? (
         <div className="flex flex-col border border-primary-500 bg-primary-50 p-1">
-          <label htmlFor="text" className="text-xs">
-            Заголовок
-          </label>
+          <div className="flex justify-between">
+            <label htmlFor="text" className="text-xs">
+              Заголовок
+            </label>
+            {diagramVariant == "answer" && (
+              <Button
+                variant="ghost"
+                className="size-fit p-1.5"
+                onClick={handleRemoveNode}
+              >
+                <Trash size={10} />
+              </Button>
+            )}
+          </div>
           <input
             id="text"
             name="text"
@@ -67,19 +89,13 @@ export function DefinitionNode({
             className="nodrag"
           />
         </div>
-        <Handle type="source" position={Position.Bottom} id="a" />
-      </>
-    );
-  } else {
-    return (
-      <>
-        <Handle type="target" position={Position.Top} />
+      ) : (
         <div className="flex max-w-96 flex-col rounded-md border-2 border-green-500 bg-green-50 p-4 shadow-lg">
           <h1 className="text-lg font-bold text-green-700">{header}</h1>
           <p className="mt-2 text-sm text-green-600">{definition}</p>
         </div>
-        <Handle type="source" position={Position.Bottom} id="a" />
-      </>
-    );
-  }
+      )}
+      <Handle type="source" position={Position.Bottom} id="a" />
+    </>
+  );
 }

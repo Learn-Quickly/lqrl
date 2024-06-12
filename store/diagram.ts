@@ -63,6 +63,11 @@ type RFState = {
     diagramVariant: DiagramVariant,
     nodes: DiagramNode[],
   ) => void;
+  removeNode: (params: {
+    taskId: string;
+    diagramVariant: DiagramVariant;
+    nodeId: string;
+  }) => void;
   setEdges: (
     taskId: string,
     diagramVariant: DiagramVariant,
@@ -206,10 +211,24 @@ export const useDiagramStore = createWithEqualityFn<RFState>(
       set((state) => {
         const diagram = state.diagrams[taskId];
         if (diagram) {
-          diagram[diagramVariant].nodes = [
-            ...diagram[diagramVariant].nodes,
-            ...nodes,
-          ];
+          diagram[diagramVariant].nodes = [...nodes];
+        }
+        return { diagrams: { ...state.diagrams, [taskId]: diagram } };
+      });
+    },
+
+    removeNode: ({ taskId, diagramVariant, nodeId }) => {
+      set((state) => {
+        const diagram = state.diagrams[taskId];
+        if (diagram) {
+          // remove edges connected to the node
+          diagram[diagramVariant].edges = diagram[diagramVariant].edges.filter(
+            (edge) => edge.source !== nodeId && edge.target !== nodeId,
+          );
+
+          diagram[diagramVariant].nodes = diagram[diagramVariant].nodes.filter(
+            (node) => node.id !== nodeId,
+          );
         }
         return { diagrams: { ...state.diagrams, [taskId]: diagram } };
       });

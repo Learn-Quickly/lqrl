@@ -105,13 +105,13 @@ function Diagram({ diagramVariant }: { diagramVariant: DiagramVariant }) {
         ),
         initialExerciseEdges: serverConnectionsToEdges({
           taskId,
-          diagramVariant,
+          diagramVariant: "exercise",
           connections: exercise.data.exercise_body.connections,
         }),
         initialAnswerNodes: serverNodesToNodes(exercise.data.answer_body.nodes),
         initialAnswerEdges: serverConnectionsToEdges({
           taskId,
-          diagramVariant,
+          diagramVariant: "answer",
           connections: exercise.data.answer_body.connections,
         }),
       });
@@ -134,9 +134,11 @@ function Diagram({ diagramVariant }: { diagramVariant: DiagramVariant }) {
         ...newNodeTypeData,
       };
 
-      useDiagramStore.getState().setNodes(taskId, diagramVariant, [newNode]);
+      useDiagramStore
+        .getState()
+        .setNodes(taskId, diagramVariant, [...nodes, newNode]);
     },
-    [taskId, diagramVariant, reactFlow],
+    [taskId, diagramVariant, reactFlow, nodes],
   );
 
   if (!isInitialized) return <div />;
@@ -187,7 +189,7 @@ function Diagram({ diagramVariant }: { diagramVariant: DiagramVariant }) {
             </Tooltip>
           </TooltipProvider>
         </Panel>
-        {displayMode == "edit" && (
+        {diagramVariant == "answer" && displayMode == "edit" && (
           <div className="absolute left-4 top-1/2 z-10 flex -translate-y-1/2 flex-col gap-2 rounded-2xl bg-stone-700 bg-opacity-10 p-1">
             <div className="flex flex-col gap-1.5 rounded-xl bg-white p-2">
               <Button
