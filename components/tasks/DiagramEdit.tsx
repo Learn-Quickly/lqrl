@@ -36,6 +36,7 @@ import { DefinitionNode } from "@/components/nodes/Definition";
 import { ProcessStagesNode } from "@/components/nodes/ProcessStages";
 import { useApiGetExerciseHandler } from "@/hooks/useApiGetExerciseHandler";
 import { serverConnectionsToEdges, serverNodesToNodes } from "@/lib/diagram";
+import { RemovableEdge } from "@/components/edges/RemovableEdge";
 
 const nodeTypes = {
   Header: HeaderNode,
@@ -66,6 +67,10 @@ function getNewNodeTypeData(
     };
   }
 }
+
+const edgeTypes = {
+  removable: RemovableEdge,
+};
 
 function Diagram({ diagramVariant }: { diagramVariant: DiagramVariant }) {
   const { task: taskId } = useParams<{ task: string }>();
@@ -98,17 +103,21 @@ function Diagram({ diagramVariant }: { diagramVariant: DiagramVariant }) {
         initialExerciseNodes: serverNodesToNodes(
           exercise.data.exercise_body.nodes,
         ),
-        initialExerciseEdges: serverConnectionsToEdges(
-          exercise.data.exercise_body.connections,
-        ),
+        initialExerciseEdges: serverConnectionsToEdges({
+          taskId,
+          diagramVariant,
+          connections: exercise.data.exercise_body.connections,
+        }),
         initialAnswerNodes: serverNodesToNodes(exercise.data.answer_body.nodes),
-        initialAnswerEdges: serverConnectionsToEdges(
-          exercise.data.answer_body.connections,
-        ),
+        initialAnswerEdges: serverConnectionsToEdges({
+          taskId,
+          diagramVariant,
+          connections: exercise.data.answer_body.connections,
+        }),
       });
     }
     setIsInitialized(true);
-  }, [taskId, diagrams, initializeDiagram, exercise.data]);
+  }, [taskId, diagrams, initializeDiagram, diagramVariant, exercise.data]);
 
   const reactFlow = useReactFlow();
 
@@ -140,6 +149,7 @@ function Diagram({ diagramVariant }: { diagramVariant: DiagramVariant }) {
       <ReactFlow
         nodes={nodes}
         nodeTypes={nodeTypes}
+        edgeTypes={edgeTypes}
         edges={edges}
         proOptions={{ hideAttribution: true }}
         onNodesChange={(changes) =>

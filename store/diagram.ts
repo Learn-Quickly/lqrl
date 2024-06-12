@@ -9,6 +9,7 @@ import {
   addEdge,
   applyNodeChanges,
   applyEdgeChanges,
+  MarkerType,
 } from "reactflow";
 
 export interface IHeaderNode extends Node {
@@ -67,6 +68,11 @@ type RFState = {
     diagramVariant: DiagramVariant,
     edges: Edge[],
   ) => void;
+  removeEdge: (params: {
+    taskId: string;
+    diagramVariant: DiagramVariant;
+    edgeId: string;
+  }) => void;
   setDisplayMode: (
     taskId: string,
     diagramVariant: DiagramVariant,
@@ -169,9 +175,22 @@ export const useDiagramStore = createWithEqualityFn<RFState>(
     ) => {
       set((state) => {
         const diagram = state.diagrams[taskId];
+        const newEdge: Edge = {
+          id: `${connection.source}-${connection.target}`,
+          source: connection.source || "",
+          target: connection.target || "",
+          sourceHandle: connection.sourceHandle,
+          targetHandle: connection.targetHandle,
+          markerEnd: { type: MarkerType.ArrowClosed, width: 20, height: 20 },
+          type: "removable",
+          data: {
+            taskId,
+            diagramVariant,
+          },
+        };
         if (diagram) {
           diagram[diagramVariant].edges = addEdge(
-            connection,
+            newEdge,
             diagram[diagramVariant].edges,
           );
         }
@@ -205,6 +224,18 @@ export const useDiagramStore = createWithEqualityFn<RFState>(
         const diagram = state.diagrams[taskId];
         if (diagram) {
           diagram[diagramVariant].edges = edges;
+        }
+        return { diagrams: { ...state.diagrams, [taskId]: diagram } };
+      });
+    },
+
+    removeEdge: ({ taskId, diagramVariant, edgeId }) => {
+      set((state) => {
+        const diagram = state.diagrams[taskId];
+        if (diagram) {
+          diagram[diagramVariant].edges = diagram[diagramVariant].edges.filter(
+            (edge) => edge.id !== edgeId,
+          );
         }
         return { diagrams: { ...state.diagrams, [taskId]: diagram } };
       });

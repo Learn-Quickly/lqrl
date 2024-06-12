@@ -1,5 +1,5 @@
-import { DiagramNode } from "@/store/diagram";
-import { Edge } from "reactflow";
+import { DiagramNode, DiagramVariant } from "@/store/diagram";
+import { Edge, MarkerType } from "reactflow";
 import { ServerDiagramBody } from "@/hooks/useApiGetExerciseHandler/models";
 
 export function storeDiagramToRequestDiagram({
@@ -24,13 +24,22 @@ export function storeDiagramToRequestDiagram({
   };
 }
 
-export function serverConnectionsToEdges(
-  connections: ServerDiagramBody["connections"],
-): Edge[] {
+export function serverConnectionsToEdges({
+  taskId,
+  diagramVariant,
+  connections,
+}: {
+  taskId: string;
+  diagramVariant: DiagramVariant;
+  connections: ServerDiagramBody["connections"];
+}): Edge[] {
   return connections.map(({ from, to }) => ({
     id: `${from}-${to}`,
     source: from,
     target: to,
+    type: "removable",
+    markerEnd: { type: MarkerType.ArrowClosed, width: 20, height: 20 },
+    data: { taskId, diagramVariant },
   }));
 }
 

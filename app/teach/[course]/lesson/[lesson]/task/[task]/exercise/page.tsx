@@ -37,7 +37,17 @@ export default function EditTaskPage() {
   const { setNodes, setEdges } = useDiagramStore.getState();
   function duplicateAnswer() {
     setNodes(taskId, "exercise", answerNodes);
-    setEdges(taskId, "exercise", answerEdges);
+    setEdges(
+      taskId,
+      "exercise",
+      answerEdges.map((e) => ({
+        ...e,
+        data: {
+          ...e.data,
+          diagramVariant: "exercise",
+        },
+      })),
+    );
   }
 
   function clearEdges() {
