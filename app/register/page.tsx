@@ -14,6 +14,8 @@ export default function Register() {
   const [passwordConfirm, setPasswordConfirm] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
+  const [passwordsUnmatched, setPasswordsUnmatched] = useState(false);
+
   const router = useRouter();
 
   const { login: storeLogin } = useAuthStore();
@@ -56,6 +58,11 @@ export default function Register() {
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (password !== passwordConfirm) {
+      setPasswordsUnmatched(true);
+      return;
+    }
+    setPasswordsUnmatched(false);
     register.mutate({ data: { username, pwd: password } });
   }
 
@@ -122,6 +129,9 @@ export default function Register() {
         >
           Зареєструватися
         </button>
+        {passwordsUnmatched && (
+          <div className="text-red-500">Паролі не співпадають</div>
+        )}
         {register.isError && (
           <div className="text-red-500">Помилка реєстрації</div>
         )}

@@ -62,7 +62,10 @@ function getCurrentExerciseState({
 
   // Find the last done exercise and the first in-progress lesson
   const lastDoneExercise = sortedServerStates
-    .filter((lesson) => lesson.state === "Done")
+    .filter(
+      (exercise) =>
+        exercise.state === "Succeeded" || exercise.state === "Failed",
+    )
     .pop();
   const firstInProgressExercise = sortedServerStates.find(
     (exercise) => exercise.state === "InProgress",
@@ -133,6 +136,24 @@ export default function LessonEditPage() {
                 currentExerciseId: exercise.exercise_id,
                 currentExerciseOrder: exercise.exercise_order,
               });
+              const maxPoints =
+                completions.data
+                  ?.filter((c) => c.exercise_id == exercise.exercise_id)
+                  .sort((a, b) => (b.max_points || 0) - (a.max_points || 0))[0]
+                  ?.max_points || 0;
+              const highestPoints =
+                completions.data
+                  ?.filter((c) => c.exercise_id == exercise.exercise_id)
+                  .sort(
+                    (a, b) => (b.points_scored || 0) - (a.points_scored || 0),
+                  )[0]?.points_scored || 0;
+              const completeResult =
+                (maxPoints &&
+                  highestPoints && {
+                    points: Math.round(highestPoints),
+                    maxPoints: maxPoints,
+                  }) ||
+                undefined;
               return (
                 <LessonExercise
                   key={exercise.exercise_id}
@@ -140,6 +161,7 @@ export default function LessonEditPage() {
                   exerciseId={exercise.exercise_id}
                   exerciseOrder={exercise.exercise_order}
                   title={exercise.title}
+                  completeResult={completeResult}
                   description={exercise.description}
                   timeToComplete={exercise.time_to_complete || 0}
                   difficulty={exercise.difficult as ExerciseDifficulty}

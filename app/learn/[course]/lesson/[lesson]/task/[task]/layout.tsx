@@ -22,6 +22,13 @@ import { DiagramNode, useDiagramStore } from "@/store/diagram";
 import { toast } from "sonner";
 import { secondsToMinutesAndSeconds } from "@/lib/utils";
 import { Edge } from "reactflow";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 const timerNotStarted = -1;
 
@@ -129,9 +136,10 @@ export default function SolutionLayout({
   }, [handleSaveChanges]);
 
   const router = useRouter();
+  const [completeResult, setCompleteResult] = useState("");
   const completeAttempt = useApiCompleteAttemptHandler({
     mutation: {
-      onSuccess: async () => {
+      onSuccess: async (res) => {
         await Promise.all([
           queryClient.invalidateQueries({
             queryKey: [
@@ -164,8 +172,12 @@ export default function SolutionLayout({
             ],
           }),
         ]);
+        if (exercise.data?.difficult == "Read") {
+          router.push(`/learn/${courseId}/lesson/${lessonId}/overview`);
+        } else {
+          setCompleteResult(`${Math.round(res.points)}/${res.max_points}`);
+        }
         toast.success("Спробу завершено");
-        router.push(`/learn/${courseId}/lesson/${lessonId}/overview`);
       },
     },
   });
@@ -174,7 +186,6 @@ export default function SolutionLayout({
     handleSaveChangesRef.current();
     await new Promise((resolve) => setTimeout(resolve, 500));
     if (completionInProgress) {
-      handleSaveChangesRef.current();
       completeAttempt.mutate({
         data: {
           exercise_completion_id: completionInProgress?.exercise_completion_id,
@@ -301,6 +312,30 @@ export default function SolutionLayout({
         )}
       </div>
       {children}
+      <Dialog
+        open={!!completeResult}
+        onOpenChange={(open) => {
+          if (!open) {
+            router.push(`/learn/${courseId}/lesson/${lessonId}/overview`);
+          }
+        }}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Завдання пройдено</DialogTitle>
+          </DialogHeader>
+          <p className="text-center text-2xl font-bold text-primary-600">
+            {completeResult}
+          </p>
+          <DialogFooter>
+            <Button asChild>
+              <Link href={`/learn/${courseId}/lesson/${lessonId}/overview`}>
+                Продовжити
+              </Link>
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

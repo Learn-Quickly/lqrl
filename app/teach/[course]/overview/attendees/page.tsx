@@ -19,11 +19,13 @@ function Attendee({
   dateRegistered,
   completedLessons,
   totalLessons,
+  scores,
 }: {
   username: string;
   dateRegistered: number;
   completedLessons: number;
   totalLessons: number;
+  scores?: { points: number; maxPoints: number };
 }) {
   const completionPercentage = getCompletedPercentage({
     completedLessons,
@@ -38,45 +40,59 @@ function Attendee({
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="grid grid-cols-2 gap-6">
-          <div className="space-y-1">
-            <p className="text-sm font-medium text-gray-500">Прогрес</p>
-            <div className="flex items-center space-x-2">
-              <div className="h-2 w-full rounded-full bg-gray-200">
-                <div
-                  className="h-full rounded-full bg-green-500"
-                  style={{ width: `${completionPercentage}%` }}
-                />
+        <div className="flex flex-col gap-6">
+          <div className="flex flex-col gap-4 sm:flex-row">
+            <div className="w-full space-y-1">
+              <p className="text-sm font-medium text-gray-500">Прогрес</p>
+              <div className="flex items-center space-x-2">
+                <div className="h-2 w-full rounded-full bg-gray-200">
+                  <div
+                    className="h-full rounded-full bg-green-500"
+                    style={{ width: `${completionPercentage}%` }}
+                  />
+                </div>
+                <span className="text-base font-medium">
+                  {completionPercentage}%
+                </span>
               </div>
-              <span className="text-base font-medium">
-                {completionPercentage}%
-              </span>
+            </div>
+            <div className="w-fit min-w-fit space-y-1">
+              <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                Сертифікат
+              </p>
+              <div className="flex items-center space-x-2">
+                {completionPercentage == 100 ? (
+                  <BadgeCheckIcon className="size-6 text-green-500" />
+                ) : (
+                  <BadgeIcon className="size-6 text-gray-200" />
+                )}
+                <span className="text-base font-medium">
+                  {completionPercentage == 100
+                    ? "Нагороджений"
+                    : "Не нагороджений"}
+                </span>
+              </div>
             </div>
           </div>
-          <div className="space-y-1">
-            <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
-              Сертифікат
-            </p>
-            <div className="flex items-center space-x-2">
-              {completionPercentage == 100 ? (
-                <BadgeCheckIcon className="size-6 text-green-500" />
-              ) : (
-                <BadgeIcon className="size-6 text-gray-200" />
-              )}
-              <span className="text-base font-medium">
-                {completionPercentage == 100
-                  ? "Нагороджений"
-                  : "Не нагороджений"}
-              </span>
+          <div className="flex w-full flex-col justify-between gap-2 md:flex-row md:items-center">
+            <div className="space-y-1">
+              <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                Пройдено уроків
+              </p>
+              <p className="text-base font-medium">
+                {completedLessons} з {totalLessons}
+              </p>
             </div>
-          </div>
-          <div className="space-y-1">
-            <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
-              Пройдено уроків
-            </p>
-            <p className="text-base font-medium">
-              {completedLessons} з {totalLessons}
-            </p>
+            {scores && (
+              <div className="space-y-1">
+                <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                  Набрано балів
+                </p>
+                <p className="text-base font-medium">
+                  {scores.points} з {scores.maxPoints}
+                </p>
+              </div>
+            )}
           </div>
         </div>
       </CardContent>

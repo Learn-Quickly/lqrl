@@ -19,6 +19,7 @@ export function LessonExercise({
   exerciseId,
   exerciseOrder,
   title,
+  completeResult,
   description,
   timeToComplete,
   difficulty,
@@ -31,6 +32,7 @@ export function LessonExercise({
   exerciseId: number;
   exerciseOrder: number;
   title: string;
+  completeResult?: { points: number; maxPoints: number };
   description: string;
   timeToComplete: number;
   difficulty: ExerciseDifficulty;
@@ -71,7 +73,16 @@ export function LessonExercise({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{title}</CardTitle>
+        <CardTitle>
+          <div className="flex items-center justify-between">
+            <span>{title}</span>
+            {completeResult && (
+              <span>
+                {completeResult.points}/{completeResult.maxPoints}
+              </span>
+            )}
+          </div>
+        </CardTitle>
         <CardDescription>{description}</CardDescription>
       </CardHeader>
       <CardContent>
