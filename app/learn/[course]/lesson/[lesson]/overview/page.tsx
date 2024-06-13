@@ -154,7 +154,7 @@ export default function LessonEditPage() {
                   href={
                     state == "Unavailable"
                       ? undefined
-                      : `/learn/${courseId}/lesson/${lessonId}/exercise/${exercise.exercise_id}/answer`
+                      : `/learn/${courseId}/lesson/${lessonId}/task/${exercise.exercise_id}/solution`
                   }
                 />
               );

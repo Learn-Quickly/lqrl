@@ -37,7 +37,7 @@ export function serverConnectionsToEdges({
     id: `${from}-${to}`,
     source: from,
     target: to,
-    type: "removable",
+    type: diagramVariant != "solution" ? "removable" : undefined,
     markerEnd: { type: MarkerType.ArrowClosed, width: 20, height: 20 },
     data: { taskId, diagramVariant },
   }));

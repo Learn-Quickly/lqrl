@@ -99,7 +99,7 @@ function Diagram({ diagramVariant }: { diagramVariant: DiagramVariant }) {
     if (taskId != "new" && !diagrams[taskId] && exercise.data) {
       initializeDiagram({
         taskId,
-        defaultDisplayMode: "edit",
+        defaultDisplayMode: diagramVariant == "solution" ? "hidden" : "edit",
         initialExerciseNodes: serverNodesToNodes(
           exercise.data.exercise_body.nodes,
         ),
@@ -113,6 +113,14 @@ function Diagram({ diagramVariant }: { diagramVariant: DiagramVariant }) {
           taskId,
           diagramVariant: "answer",
           connections: exercise.data.answer_body.connections,
+        }),
+        initialSolutionNodes: serverNodesToNodes(
+          exercise.data.exercise_body.nodes,
+        ),
+        initialSolutionEdges: serverConnectionsToEdges({
+          taskId,
+          diagramVariant: "solution",
+          connections: exercise.data.exercise_body.connections,
         }),
       });
     }
@@ -166,29 +174,31 @@ function Diagram({ diagramVariant }: { diagramVariant: DiagramVariant }) {
         className="border-t border-stone-300 bg-stone-50"
         fitView
       >
-        <Panel position="top-right" className="bg-white">
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Toggle
-                  variant="outline"
-                  aria-label="Toggle preview"
-                  pressed={displayMode === "view"}
-                  onPressedChange={(pressed) =>
-                    setDisplayMode(
-                      taskId,
-                      diagramVariant,
-                      pressed ? "view" : "edit",
-                    )
-                  }
-                >
-                  <Eye className="h-4 w-4" />
-                </Toggle>
-              </TooltipTrigger>
-              <TooltipContent>Попередній перегляд</TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        </Panel>
+        {diagramVariant != "solution" && (
+          <Panel position="top-right" className="bg-white">
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Toggle
+                    variant="outline"
+                    aria-label="Toggle preview"
+                    pressed={displayMode === "view"}
+                    onPressedChange={(pressed) =>
+                      setDisplayMode(
+                        taskId,
+                        diagramVariant,
+                        pressed ? "view" : "edit",
+                      )
+                    }
+                  >
+                    <Eye className="h-4 w-4" />
+                  </Toggle>
+                </TooltipTrigger>
+                <TooltipContent>Попередній перегляд</TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </Panel>
+        )}
         {diagramVariant == "answer" && displayMode == "edit" && (
           <div className="absolute left-4 top-1/2 z-10 flex -translate-y-1/2 flex-col gap-2 rounded-2xl bg-stone-700 bg-opacity-10 p-1">
             <div className="flex flex-col gap-1.5 rounded-xl bg-white p-2">
@@ -223,8 +233,12 @@ function Diagram({ diagramVariant }: { diagramVariant: DiagramVariant }) {
             </div>
           </div>
         )}
-        <Controls />
-        <MiniMap />
+        {displayMode != "hidden" && (
+          <>
+            <Controls />
+            <MiniMap />
+          </>
+        )}
         <Background variant={BackgroundVariant.Dots} gap={12} size={1} />
       </ReactFlow>
     </div>

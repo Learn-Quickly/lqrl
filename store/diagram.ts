@@ -30,7 +30,7 @@ export interface IProcessStages extends Node {
 
 export type DiagramNode = IHeaderNode | IDefinitionNode | IProcessStages;
 
-type DisplayMode = "edit" | "view";
+type DisplayMode = "edit" | "view" | "hidden";
 
 type DiagramState = {
   nodes: DiagramNode[];
@@ -38,10 +38,14 @@ type DiagramState = {
   displayMode: DisplayMode;
 };
 
-export type DiagramVariant = "answer" | "exercise";
+export type DiagramVariant = "answer" | "exercise" | "solution";
 type RFState = {
   diagrams: {
-    [taskId: string]: { answer: DiagramState; exercise: DiagramState };
+    [taskId: string]: {
+      answer: DiagramState;
+      exercise: DiagramState;
+      solution: DiagramState;
+    };
   };
   onNodesChange: (
     taskId: string,
@@ -131,6 +135,8 @@ type RFState = {
     initialAnswerEdges?: Edge[];
     initialExerciseNodes?: DiagramNode[];
     initialExerciseEdges?: Edge[];
+    initialSolutionNodes?: DiagramNode[];
+    initialSolutionEdges?: Edge[];
   }) => void;
 };
 
@@ -341,6 +347,8 @@ export const useDiagramStore = createWithEqualityFn<RFState>(
       initialAnswerEdges = [],
       initialExerciseNodes = [],
       initialExerciseEdges = [],
+      initialSolutionNodes = [],
+      initialSolutionEdges = [],
     }) => {
       set((state) => {
         if (!state.diagrams[taskId]) {
@@ -353,6 +361,11 @@ export const useDiagramStore = createWithEqualityFn<RFState>(
             exercise: {
               nodes: initialExerciseNodes,
               edges: initialExerciseEdges,
+              displayMode: defaultDisplayMode,
+            },
+            solution: {
+              nodes: initialSolutionNodes,
+              edges: initialSolutionEdges,
               displayMode: defaultDisplayMode,
             },
           };
