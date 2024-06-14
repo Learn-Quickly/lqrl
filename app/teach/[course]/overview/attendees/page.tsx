@@ -8,7 +8,11 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { BadgeCheckIcon, BadgeIcon } from "lucide-react";
-import { useApiGetAttendants, useApiGetLessonsHandler } from "@/dist/kubb";
+import {
+  useApiGetAttendants,
+  useApiGetLessonsHandler,
+  useApiGetPointStatisticsHandler,
+} from "@/dist/kubb";
 import { useParams, useSearchParams } from "next/navigation";
 import { getCompletedPercentage, timestampToDateString } from "@/lib/utils";
 import { paginationLimit } from "@/constants";
@@ -74,7 +78,7 @@ function Attendee({
               </div>
             </div>
           </div>
-          <div className="flex w-full flex-col justify-between gap-2 md:flex-row md:items-center">
+          <div className="flex w-full flex-col gap-2 md:flex-row md:items-center md:gap-8">
             <div className="space-y-1">
               <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
                 Пройдено уроків
@@ -111,6 +115,8 @@ export default function Attendees() {
     list_options: `{"limit": ${paginationLimit}, "offset": ${(page - 1) * paginationLimit}}`,
   });
 
+  const points = useApiGetPointStatisticsHandler(parseInt(courseId));
+
   return (
     <section className="w-full border-t py-12">
       <div className="grid gap-12 px-4 md:px-6">
@@ -126,6 +132,13 @@ export default function Attendees() {
               dateRegistered={attendee.date_registered}
               completedLessons={attendee.number_of_completed_lessons}
               totalLessons={lessons.data?.length || 0}
+              scores={{
+                points:
+                  points.data?.users_points.sort(
+                    (a, b) => b.points - a.points,
+                  )[0].points || 0,
+                maxPoints: points.data?.max_points || 0,
+              }}
             />
           ))}
           {attendants.data?.users.length == 0 && (

@@ -165,9 +165,9 @@ export default function SolutionLayout({
             queryKey: [
               {
                 url: "/api/course/lesson/get_lesson_progresses",
-                params: {
-                  course_id: parseInt(courseId),
-                },
+              },
+              {
+                course_id: parseInt(courseId),
               },
             ],
           }),
