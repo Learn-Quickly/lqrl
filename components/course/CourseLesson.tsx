@@ -65,7 +65,7 @@ export function CourseLesson({
     <Card>
       <CardHeader>
         <CardTitle>{title}</CardTitle>
-        <CardDescription>{description}</CardDescription>
+        <CardDescription className="max-w-2xl">{description}</CardDescription>
       </CardHeader>
       {(intent == "learn" || intent == "edit") && (
         <CardFooter className="flex gap-2">

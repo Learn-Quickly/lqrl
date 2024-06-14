@@ -83,7 +83,7 @@ export function LessonExercise({
             )}
           </div>
         </CardTitle>
-        <CardDescription>{description}</CardDescription>
+        <CardDescription className="max-w-2xl">{description}</CardDescription>
       </CardHeader>
       <CardContent>
         <div className="grid grid-cols-2 gap-6">

@@ -65,7 +65,7 @@ export function CourseHeader({
   return (
     <header
       className={clsx(
-        "flex w-full flex-col bg-gradient-to-b from-50% to-stone-100 px-4 py-12 md:flex-row md:items-center md:px-6 md:py-20",
+        "flex w-full flex-col gap-12 bg-gradient-to-b from-50% to-stone-100 px-4 py-12 md:flex-row md:items-center md:px-6 md:py-20",
         color == "red" && "from-red-100",
         color == "yellow" && "from-yellow-100",
         color == "blue" && "from-blue-100",
@@ -112,11 +112,11 @@ export function CourseHeader({
         </div>
       </div>
       {imgSrc && (
-        <div className="w-full md:w-1/2">
+        <div className="w-full md:w-fit">
           <img
             src={imgSrc ? AXIOS_BASE + "/" + imgSrc : undefined}
             alt={title}
-            className="max-h-96"
+            className="max-h-52"
           />
         </div>
       )}

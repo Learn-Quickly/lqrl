@@ -296,7 +296,9 @@ export default function SolutionLayout({
         </Button>
         {exercise.data?.difficult != "Read" && timeLeft > timerNotStarted && (
           <span className="font-mono font-medium">
-            {timeIsUp.current ? "Час вийшов" : `${minutes}:${seconds}`}
+            {timeIsUp.current
+              ? "Час вийшов"
+              : `${minutes}:${seconds >= 10 ? seconds : "0" + seconds}`}
           </span>
         )}
         {!completionInProgress ? (
