@@ -42,6 +42,8 @@ export type DiagramVariant = "answer" | "exercise" | "solution";
 type RFState = {
   diagrams: {
     [taskId: string]: {
+      exerciseName: string;
+      exerciseDescription: string;
       answer: DiagramState;
       exercise: DiagramState;
       solution: DiagramState;
@@ -129,6 +131,8 @@ type RFState = {
     stageId: ProcessStage["id"],
   ) => void;
   initializeDiagram: (params: {
+    exerciseName?: string;
+    exerciseDescription?: string;
     taskId: string;
     defaultDisplayMode?: DisplayMode;
     initialAnswerNodes?: DiagramNode[];
@@ -137,6 +141,11 @@ type RFState = {
     initialExerciseEdges?: Edge[];
     initialSolutionNodes?: DiagramNode[];
     initialSolutionEdges?: Edge[];
+  }) => void;
+  setExerciseName: (params: { taskId: string; name: string }) => void;
+  setExerciseDescription: (params: {
+    taskId: string;
+    description: string;
   }) => void;
 };
 
@@ -302,6 +311,8 @@ export const useDiagramStore = createWithEqualityFn<RFState>(
     },
 
     initializeDiagram: ({
+      exerciseName = "",
+      exerciseDescription = "",
       taskId,
       defaultDisplayMode = "view",
       initialAnswerNodes = [],
@@ -314,6 +325,8 @@ export const useDiagramStore = createWithEqualityFn<RFState>(
       set((state) => {
         if (!state.diagrams[taskId]) {
           state.diagrams[taskId] = {
+            exerciseName,
+            exerciseDescription,
             answer: {
               nodes: initialAnswerNodes,
               edges: initialAnswerEdges,
@@ -412,6 +425,26 @@ export const useDiagramStore = createWithEqualityFn<RFState>(
                   }
                 : node,
           );
+        }
+        return { diagrams: { ...state.diagrams, [taskId]: diagram } };
+      });
+    },
+
+    setExerciseName: ({ taskId, name }) => {
+      set((state) => {
+        const diagram = state.diagrams[taskId];
+        if (diagram) {
+          diagram.exerciseName = name;
+        }
+        return { diagrams: { ...state.diagrams, [taskId]: diagram } };
+      });
+    },
+
+    setExerciseDescription: ({ taskId, description }) => {
+      set((state) => {
+        const diagram = state.diagrams[taskId];
+        if (diagram) {
+          diagram.exerciseDescription = description;
         }
         return { diagrams: { ...state.diagrams, [taskId]: diagram } };
       });

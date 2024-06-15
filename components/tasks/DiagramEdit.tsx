@@ -37,6 +37,7 @@ import { ProcessStagesNode } from "@/components/nodes/ProcessStages";
 import { useApiGetExerciseHandler } from "@/hooks/useApiGetExerciseHandler";
 import { serverConnectionsToEdges, serverNodesToNodes } from "@/lib/diagram";
 import { RemovableEdge } from "@/components/edges/RemovableEdge";
+import { GenerateDiagramBtn } from "@/components/tasks/GenerateDiagramBtn";
 
 const nodeTypes = {
   Header: HeaderNode,
@@ -102,6 +103,8 @@ function Diagram({ diagramVariant }: { diagramVariant: DiagramVariant }) {
     if (taskId != "new" && !diagrams[taskId] && exercise.data) {
       initializeDiagram({
         taskId,
+        exerciseName: exercise.data.title,
+        exerciseDescription: exercise.data.description,
         defaultDisplayMode: diagramVariant == "solution" ? "hidden" : "edit",
         initialExerciseNodes: serverNodesToNodes(
           exercise.data.exercise_body.nodes,
@@ -234,6 +237,7 @@ function Diagram({ diagramVariant }: { diagramVariant: DiagramVariant }) {
                 <span className="text-xs">Етапи</span>
               </Button>
             </div>
+            <GenerateDiagramBtn />
           </div>
         )}
         {displayMode != "hidden" && (

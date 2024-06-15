@@ -55,8 +55,13 @@ export default function EditTaskLayout({
   const router = useRouter();
   const isNew = taskId === "new";
 
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
+  const { setExerciseName, setExerciseDescription } =
+    useDiagramStore.getState();
+  const { exerciseName, exerciseDescription } = useDiagramStore((state) => ({
+    exerciseName: state.diagrams[taskId]?.exerciseName,
+    exerciseDescription: state.diagrams[taskId]?.exerciseDescription,
+  }));
+
   const [difficulty, setDifficulty] = useState<ExerciseDifficulty>("Easy");
   const [minutes, setMinutes] = useState("");
   const [seconds, setSeconds] = useState("");
@@ -65,8 +70,11 @@ export default function EditTaskLayout({
 
   useEffect(() => {
     if (exercise.data) {
-      setTitle(exercise.data.title);
-      setDescription(exercise.data.description);
+      setExerciseName({ taskId, name: exercise.data.title });
+      setExerciseDescription({
+        taskId,
+        description: exercise.data.description,
+      });
       setDifficulty(exercise.data.difficult as ExerciseDifficulty);
       if (exercise.data.time_to_complete) {
         const { minutes, seconds } = secondsToMinutesAndSeconds(
@@ -76,7 +84,7 @@ export default function EditTaskLayout({
         setSeconds(seconds.toString());
       }
     }
-  }, [exercise.data]);
+  }, [exercise.data, taskId, setExerciseName, setExerciseDescription]);
 
   const handleSetMinutes = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = parseInt(e.target.value);
@@ -136,8 +144,8 @@ export default function EditTaskLayout({
     });
     createExercise.mutate({
       data: {
-        title,
-        description,
+        title: exerciseName,
+        description: exerciseDescription,
         difficult: difficulty,
         time_to_complete: parseInt(minutes) * 60 + parseInt(seconds),
         lesson_id: parseInt(lessonId),
@@ -226,8 +234,10 @@ export default function EditTaskLayout({
                 <Input
                   id="task-name"
                   placeholder="Введіть назву вправи"
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
+                  value={exerciseName}
+                  onChange={(e) =>
+                    setExerciseName({ taskId, name: e.target.value })
+                  }
                   className="col-span-3"
                 />
               </div>
@@ -238,8 +248,13 @@ export default function EditTaskLayout({
                 <Textarea
                   id="task-description"
                   placeholder="Введіть опис вправи"
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
+                  value={exerciseDescription}
+                  onChange={(e) =>
+                    setExerciseDescription({
+                      taskId,
+                      description: e.target.value,
+                    })
+                  }
                   className="col-span-3"
                 />
               </div>
