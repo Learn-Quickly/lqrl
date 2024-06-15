@@ -63,7 +63,10 @@ function getNewNodeTypeData(
   } else {
     return {
       type,
-      data: { header: `${type} node`, stages: [{ id: 0, name: "name" }] },
+      data: {
+        header: `${type} node`,
+        stages: [{ id: nanoid(), name: "name" }],
+      },
     };
   }
 }

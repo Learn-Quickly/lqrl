@@ -22,7 +22,7 @@ export interface IDefinitionNode extends Node {
   data: { header: string; definition: string };
 }
 
-type ProcessStage = { id: number; name: string };
+type ProcessStage = { id: string; name: string };
 export interface IProcessStages extends Node {
   type: "ProcessStages";
   data: { header: string; stages: ProcessStage[] };
@@ -126,7 +126,7 @@ type RFState = {
     taskId: string,
     diagramVariant: DiagramVariant,
     id: string,
-    stageId: number,
+    stageId: ProcessStage["id"],
   ) => void;
   initializeDiagram: (params: {
     taskId: string;
@@ -144,11 +144,7 @@ export const useDiagramStore = createWithEqualityFn<RFState>(
   (set, get) => ({
     diagrams: {},
 
-    onNodesChange: (
-      taskId: string,
-      diagramVariant: DiagramVariant,
-      changes: NodeChange[],
-    ) => {
+    onNodesChange: (taskId, diagramVariant, changes) => {
       set((state) => {
         const diagram = state.diagrams[taskId];
         if (diagram) {
@@ -162,11 +158,7 @@ export const useDiagramStore = createWithEqualityFn<RFState>(
       });
     },
 
-    onEdgesChange: (
-      taskId: string,
-      diagramVariant: DiagramVariant,
-      changes: EdgeChange[],
-    ) => {
+    onEdgesChange: (taskId, diagramVariant, changes) => {
       set((state) => {
         const diagram = state.diagrams[taskId];
         if (diagram) {
@@ -179,11 +171,7 @@ export const useDiagramStore = createWithEqualityFn<RFState>(
       });
     },
 
-    onConnect: (
-      taskId: string,
-      diagramVariant: DiagramVariant,
-      connection: Connection,
-    ) => {
+    onConnect: (taskId, diagramVariant, connection) => {
       set((state) => {
         const diagram = state.diagrams[taskId];
         const newEdge: Edge = {
@@ -209,11 +197,7 @@ export const useDiagramStore = createWithEqualityFn<RFState>(
       });
     },
 
-    setNodes: (
-      taskId: string,
-      diagramVariant: DiagramVariant,
-      nodes: DiagramNode[],
-    ) => {
+    setNodes: (taskId, diagramVariant, nodes) => {
       set((state) => {
         const diagram = state.diagrams[taskId];
         if (diagram) {
@@ -240,11 +224,7 @@ export const useDiagramStore = createWithEqualityFn<RFState>(
       });
     },
 
-    setEdges: (
-      taskId: string,
-      diagramVariant: DiagramVariant,
-      edges: Edge[],
-    ) => {
+    setEdges: (taskId, diagramVariant, edges) => {
       set((state) => {
         const diagram = state.diagrams[taskId];
         if (diagram) {
@@ -266,11 +246,7 @@ export const useDiagramStore = createWithEqualityFn<RFState>(
       });
     },
 
-    setDisplayMode: (
-      taskId: string,
-      diagramVariant: DiagramVariant,
-      mode: DisplayMode,
-    ) => {
+    setDisplayMode: (taskId, diagramVariant, mode) => {
       set((state) => {
         const diagram = state.diagrams[taskId];
         if (diagram) {
@@ -280,12 +256,7 @@ export const useDiagramStore = createWithEqualityFn<RFState>(
       });
     },
 
-    setHeaderTitle: (
-      taskId: string,
-      diagramVariant: DiagramVariant,
-      id: string,
-      title: string,
-    ) => {
+    setHeaderTitle: (taskId, diagramVariant, id, title) => {
       set((state) => {
         const diagram = state.diagrams[taskId];
         if (diagram) {
@@ -300,12 +271,7 @@ export const useDiagramStore = createWithEqualityFn<RFState>(
       });
     },
 
-    setDefinitionTitle: (
-      taskId: string,
-      diagramVariant: DiagramVariant,
-      id: string,
-      title: string,
-    ) => {
+    setDefinitionTitle: (taskId, diagramVariant, id, title) => {
       set((state) => {
         const diagram = state.diagrams[taskId];
         if (diagram) {
@@ -320,12 +286,7 @@ export const useDiagramStore = createWithEqualityFn<RFState>(
       });
     },
 
-    setDefinitionText: (
-      taskId: string,
-      diagramVariant: DiagramVariant,
-      id: string,
-      text: string,
-    ) => {
+    setDefinitionText: (taskId, diagramVariant, id, text) => {
       set((state) => {
         const diagram = state.diagrams[taskId];
         if (diagram) {
@@ -376,12 +337,7 @@ export const useDiagramStore = createWithEqualityFn<RFState>(
       });
     },
 
-    setProcessStagesHeader: (
-      taskId: string,
-      diagramVariant: DiagramVariant,
-      id: string,
-      title: string,
-    ) => {
+    setProcessStagesHeader: (taskId, diagramVariant, id, title) => {
       set((state) => {
         const diagram = state.diagrams[taskId];
         if (diagram) {
@@ -396,11 +352,7 @@ export const useDiagramStore = createWithEqualityFn<RFState>(
       });
     },
 
-    addProcessStage: (
-      taskId: string,
-      diagramVariant: DiagramVariant,
-      stage: ProcessStage,
-    ) => {
+    addProcessStage: (taskId, diagramVariant, stage) => {
       set((state) => {
         const diagram = state.diagrams[taskId];
         if (diagram) {
@@ -421,12 +373,7 @@ export const useDiagramStore = createWithEqualityFn<RFState>(
       });
     },
 
-    setProcessStagesStage: (
-      taskId: string,
-      diagramVariant: DiagramVariant,
-      id: string,
-      stage: ProcessStage,
-    ) => {
+    setProcessStagesStage: (taskId, diagramVariant, id, stage) => {
       set((state) => {
         const diagram = state.diagrams[taskId];
         if (diagram) {
@@ -449,12 +396,7 @@ export const useDiagramStore = createWithEqualityFn<RFState>(
       });
     },
 
-    removeProcessStage: (
-      taskId: string,
-      diagramVariant: DiagramVariant,
-      id: string,
-      stageId: number,
-    ) => {
+    removeProcessStage: (taskId, diagramVariant, id, stageId) => {
       set((state) => {
         const diagram = state.diagrams[taskId];
         if (diagram) {

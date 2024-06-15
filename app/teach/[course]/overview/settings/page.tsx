@@ -51,14 +51,23 @@ export default function CourseSettings() {
   const updateCourse = useApiUpdateCourseHandler({
     mutation: {
       onSuccess: async () => {
-        await queryClient.invalidateQueries({
-          queryKey: [
-            {
-              params: { courseId: parseInt(courseId) },
-              url: "/api/course/get_course/:course_id",
-            },
-          ],
-        });
+        await Promise.all([
+          queryClient.invalidateQueries({
+            queryKey: [
+              {
+                params: { courseId: parseInt(courseId) },
+                url: "/api/course/get_course/:course_id",
+              },
+            ],
+          }),
+          queryClient.invalidateQueries({
+            queryKey: [
+              {
+                url: "/api/course/get_created_courses",
+              },
+            ],
+          }),
+        ]);
         toast.success("Курс успішно оновлено", {
           description: "Зміни були збережені.",
         });

@@ -136,7 +136,7 @@ export default function Attendees() {
                 points:
                   points.data?.users_points.sort(
                     (a, b) => b.points - a.points,
-                  )[0].points || 0,
+                  )[0]?.points || 0,
                 maxPoints: points.data?.max_points || 0,
               }}
             />

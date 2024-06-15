@@ -8,6 +8,7 @@ import {
 import { useParams, usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Trash } from "lucide-react";
+import { nanoid } from "nanoid";
 
 export function ProcessStagesNode({
   id,
@@ -35,24 +36,27 @@ export function ProcessStagesNode({
   );
 
   const onStageChange = useCallback(
-    (stageId: number) => (evt: any) => {
-      const updatedStage = { ...stages[stageId], name: evt.target.value };
+    (stageId: string) => (evt: any) => {
+      const updatedStage = {
+        id: stageId,
+        name: evt.target.value,
+      };
       useDiagramStore
         .getState()
         .setProcessStagesStage(taskId, diagramVariant, id, updatedStage);
     },
-    [taskId, diagramVariant, id, stages],
+    [taskId, diagramVariant, id],
   );
 
   const onAddStage = useCallback(() => {
-    const newStage = { id: stages.length, name: "" };
+    const newStage = { id: nanoid(), name: "" };
     useDiagramStore
       .getState()
       .addProcessStage(taskId, diagramVariant, newStage);
-  }, [taskId, diagramVariant, stages]);
+  }, [taskId, diagramVariant]);
 
   const onRemoveStage = useCallback(
-    (stageId: number) => () => {
+    (stageId: string) => () => {
       useDiagramStore
         .getState()
         .removeProcessStage(taskId, diagramVariant, id, stageId);

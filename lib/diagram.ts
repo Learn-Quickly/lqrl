@@ -1,6 +1,7 @@
 import { DiagramNode, DiagramVariant } from "@/store/diagram";
 import { Edge, MarkerType } from "reactflow";
 import { ServerDiagramBody } from "@/hooks/useApiGetExerciseHandler/models";
+import { nanoid } from "nanoid";
 
 export function storeDiagramToRequestDiagram({
   nodes,
@@ -19,7 +20,16 @@ export function storeDiagramToRequestDiagram({
       x: Math.round(x),
       y: Math.round(y),
       node_type: type,
-      body: data,
+      body:
+        type != "ProcessStages"
+          ? data
+          : {
+              header: data.header,
+              stages: data.stages.map((s, i) => ({
+                id: i,
+                name: s.name,
+              })),
+            },
     })),
   };
 }
@@ -51,6 +61,17 @@ export function serverNodesToNodes(
     id,
     position: { x, y },
     type: node_type,
-    data: body,
+    data:
+      // @ts-ignore
+      node_type == "ProcessStages" && body.stages
+        ? {
+            header: body.header,
+            // @ts-ignore
+            stages: body.stages?.map((s) => ({
+              id: nanoid(),
+              name: s.name,
+            })),
+          }
+        : body,
   }));
 }
