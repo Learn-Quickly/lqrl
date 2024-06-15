@@ -34,9 +34,13 @@ import { clsx } from "clsx";
 import { DiagramVariant, useDiagramStore } from "@/store/diagram";
 import { useApiCreateExerciseHandler } from "@/hooks/useApiCreateExerciseHandler";
 import { toast } from "sonner";
-import { useApiGetExerciseHandler } from "@/dist/kubb";
+import {
+  useApiGetExerciseHandler,
+  useApiUpdateExerciseHandler,
+} from "@/dist/kubb";
 import { useQueryClient } from "@tanstack/react-query";
 import { storeDiagramToRequestDiagram } from "@/lib/diagram";
+import { Checkbox } from "@/components/ui/checkbox";
 
 export default function EditTaskLayout({
   children,
@@ -65,6 +69,7 @@ export default function EditTaskLayout({
   const [difficulty, setDifficulty] = useState<ExerciseDifficulty>("Easy");
   const [minutes, setMinutes] = useState("");
   const [seconds, setSeconds] = useState("");
+  const [retake, setRetake] = useState(false);
 
   const exercise = useApiGetExerciseHandler(parseInt(taskId));
 
@@ -153,6 +158,50 @@ export default function EditTaskLayout({
           difficulty == "Read" ? "Conspect" : "InteractiveConspect",
         answer_body: answerBody,
         exercise_body: difficulty == "Read" ? answerBody : exerciseBody,
+      },
+    });
+  }
+
+  const updateExercise = useApiUpdateExerciseHandler({
+    mutation: {
+      onSuccess: async () => {
+        await queryClient.invalidateQueries({
+          queryKey: [
+            {
+              url: "/api/course/lesson/exercise/get_lesson_exercises/:lesson_id",
+              params: { lessonId: parseInt(lessonId) },
+            },
+          ],
+        });
+        toast.success("Вправу успішно оновлено");
+        router.push(`/teach/${courseId}/lesson/${lessonId}/overview`);
+      },
+    },
+  });
+
+  function handleUpdateExercise() {
+    const answerBody = storeDiagramToRequestDiagram({
+      nodes: answerNodes,
+      edges: answerEdges,
+    });
+    updateExercise.mutate({
+      data: {
+        exercise_id: parseInt(taskId),
+        exercise_type:
+          difficulty == "Read" ? "Conspect" : "InteractiveConspect",
+        is_retake_exercise: retake,
+        title: exerciseName,
+        description: exerciseDescription,
+        difficult: difficulty,
+        time_to_complete: parseInt(minutes) * 60 + parseInt(seconds),
+        answer_body: answerBody,
+        exercise_body:
+          difficulty == "Read"
+            ? answerBody
+            : storeDiagramToRequestDiagram({
+                nodes: exerciseNodes,
+                edges: exerciseEdges,
+              }),
       },
     });
   }
@@ -329,9 +378,26 @@ export default function EditTaskLayout({
                   </div>
                 </div>
               )}
+              {!isNew && (
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="retake" className="text-right">
+                    Повторне виконання
+                  </Label>
+                  <div className="col-span-3 flex items-center gap-2">
+                    <Checkbox
+                      id="retake"
+                      checked={retake}
+                      onClick={() => setRetake((r) => !r)}
+                    />
+                  </div>
+                </div>
+              )}
             </div>
             <DialogFooter>
-              <Button type="submit" onClick={handleCreateExercise}>
+              <Button
+                type="submit"
+                onClick={isNew ? handleCreateExercise : handleUpdateExercise}
+              >
                 {isNew ? "Створити" : "Зберегти"}
               </Button>
             </DialogFooter>
