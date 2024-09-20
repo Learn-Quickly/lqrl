@@ -22,3 +22,11 @@ create `.env.local` file with the following content:
 ```bash
 OPENAI_API_KEY=your_openai_api_key
 ```
+
+## UI preview
+
+### Lessons management
+![Lessons management UI](docs/img/ui.gif)
+
+### Diagram UI
+![Diagram UI](docs/img/diagram-ui.gif)
